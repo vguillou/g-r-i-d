@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>grid-layout demo</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="msapplication-TileColor" content="#f44336">
+  <meta name="theme-color" content="#f44336">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../grid-layout.html">
+
+  <style is="custom-style">
+    html,
+    body {
+      margin: 0;
+    }
+
+    html,
+    body,
+    grid-layout {
+      padding: 0;
+    }
+
+    div {
+      padding: 0 12px;
+    }
+
+    p.title {
+      width: 100%;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .grid-item {
+      background-color: #f48fb1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* example4 */
+    #example4 > .grid-item {
+      background-color: #f44336;
+      color: white;
+    }
+    #example4[columns='2'] > .grid-item {
+      background-color: #4caf50;
+    }
+    #example4[columns='3'] > .grid-item {
+      background-color: #3f51b5;
+    }
+
+    /* example5 */
+    #example5 > .grid-item {
+      background-color: #f44336;
+      color: white;
+    }
+    #example5[columns='2'] > .grid-item:nth-of-type(3n - 2) { /* Every third item, starting from the first */
+      max-width: none; /* very important */
+      width: calc(100% - 2 * 2px); /* 100% - 2 * gutter */
+      background-color: #4caf50;
+    }
+    #example5[columns='3'] > .grid-item:nth-of-type(4n - 3) { /* Every fourth item, starting from the first */
+      max-width: none; /* very important */
+      width: calc(100% - 2 * 2px); /* 100% - 2 * gutter */
+      background-color: #3f51b5;
+    }
+  </style>
+  
+<body unresolved>
+
+  <template is="dom-bind" id="demo">
+
+    <div>
+      <p class="title">Example 1</p>
+      <p>"As many columns as possible, which are at least 250px large, with 4px gutters"</p> 
+      <p>min-column-width="250" gutter="4"</p>
+    </div>
+
+    <grid-layout min-column-width="250" gutter="4">
+      <template is="dom-repeat" items="[[items]]">
+        <span class="grid-item">[[item]]</span>
+      </template>
+    </grid-layout>
+
+    <div>
+      <hr/>
+      <p class="title">Example 2</p>
+      <p>"Square items and a maximum of 3 columns, which are at least 150px large (or max 200px large when max columns), with 1px gutters"</p> 
+      <p>min-column-width="150" gutter="1" max-column-number="3" max-column-width="200" row-height="100cw"</p>
+    </div>
+
+    <grid-layout min-column-width="150" gutter="1" max-column-number="3" max-column-width="200" row-height="100cw">
+      <template is="dom-repeat" items="[[items]]">
+        <span class="grid-item">[[item]]</span>
+      </template>
+    </grid-layout>
+
+    <div>
+      <hr/>
+      <p class="title">Example 3</p>
+      <p>"Always 1 column, 50px rows, with 16px gutters"</p> 
+      <p>max-column-number="1" gutter="16"</p>
+    </div>
+
+    <grid-layout max-column-number="1" gutter="16" row-height='50px'>
+      <template is="dom-repeat" items="[[items]]">
+        <span class="grid-item">[[item]]</span>
+      </template>
+    </grid-layout>
+
+    <div>
+      <hr/>
+      <p class="title">Example 4</p>
+      <p>"Change color according to the number of columns displayed"</p> 
+      <p>See CSS for "example4"</p>
+    </div>
+
+    <grid-layout id="example4" min-column-width="200" gutter="2" max-column-number="3" max-column-width="400">
+      <template is="dom-repeat" items="[[items]]">
+        <span class="grid-item">[[item]]</span>
+      </template>
+    </grid-layout>
+
+    <div>
+      <hr/>
+      <p class="title">Example 5</p>
+      <p>"Change size of every nth item, according to the number of columns displayed"</p> 
+      <p>See CSS for "example5"</p>
+    </div>
+
+    <grid-layout id="example5" min-column-width="200" gutter="2" max-column-number="3" max-column-width="400" row-height="50cw">
+      <template is="dom-repeat" items="[[items]]">
+        <span class="grid-item">[[item]]</span>
+      </template>
+    </grid-layout>
+
+  </template>
+
+  <script>
+    var demo = document.querySelector('#demo');
+
+    demo.items = ['1- First!',
+      '2- Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+      '3- Hello world',
+      '4- Bonjour le monde',
+      '5- Hallo Welt',
+      '6- Hola mundo',
+      '7- Hej världen'];
+    
+    demo.toggleSquare = function() {
+      alert('Square!');
+    };
+  </script>
+
+</body>
+</html>

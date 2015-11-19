@@ -1,0 +1,183 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
+
+<!--
+A simple responsive and adaptive grid layout.
+The adaptive breakpoints are defined by the minimum width of the columns.
+Gutter size, row height, grid items aspect-ration and maximum width are
+all easily manageable.
+
+Exemple: A grid with square 150px items, separated by 4px gutters. 
+
+    <grid-layout min-column-width="150" gutter="4" row-height="100cw">
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+    </grid-layout>
+
+@element grid-layout
+@demo demo/index.html
+-->
+<dom-module id="grid-layout">
+
+  <template>
+    <style>
+      :host {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        max-width: var(--grid-max-width);
+        margin: 0 auto;
+      }
+      :host > ::content > * {
+        @apply(--layout-flex-none);
+        width: var(--grid-column-width);
+        max-width: var(--grid-column-max-width);
+        height: var(--grid-row-height);
+        margin: var(--grid-gutter);
+        box-sizing: border-box;
+      }
+      :host([columns="1"]) {
+        max-width: none;
+        margin: 0 var(--grid-gutter);
+      }
+      :host([columns="1"]) > ::content > * {
+        width: 100% !important;
+        min-width: initial !important;
+        max-width: none;
+        margin: var(--grid-gutter) 0;
+      }
+    </style>
+    <content></content>
+  </template>
+
+  <script>
+  (function() {
+    'use strict';  
+    Polymer({
+      is: 'grid-layout',
+      behaviors: [Polymer.IronResizableBehavior],
+      properties: {
+        /**
+         * The effective number of columns of the grid.
+         * Read-only.
+         */
+        columns: {
+          type: Number,
+          notify: true,
+          reflectToAttribute: true,
+          readOnly: true
+        },
+        /**
+         * The minimun width of the columns in px.
+         */
+        minColumnWidth: {
+          type: Number,
+          value: 300
+        },
+        /**
+         * The height of the rows.
+         * By default (or if `rowHeight` is `undefined`), each row
+         * adapts it's height to it's content.
+         * `rowHeight` can also be fixed with 2 units of measure:
+         * pixels (px) and percentage of column width (cw).
+         * Example :
+         * <ul>
+         * <li>undefined => Each row adapts it's height to it's content.</li>
+         * <li>'150px' => All rows are 150px in height.</li>
+         * <li>'100cw' => Row height is equal to column width: grid items are squared.</li>
+         * <li>'50cw' => Row height is equal to half the column width:
+         * grid items are rectangular with a 2/1 aspact-ratio.</li>
+         * </ul>
+         */
+        rowHeight: {
+          type: String,
+          value: undefined
+        },
+        /**
+         * The gutter width in px.
+         */
+        gutter: {
+          type: Number,
+          value: 4
+        },
+        /**
+         * The maximum number of columns to display.
+         */
+        maxColumnNumber: {
+          type: Number,
+          value: undefined
+        },
+        /**
+         * The maximum width of the columns in px.
+         * Only works in conjunction with `maxColumnNumber` to limit
+         * the total width and number of column of the grid.
+         * Is *not* applied when the number of columns is inferior
+         * to `maxColumnNumber`.
+         */
+        maxColumnWidth: {
+          type: Number,
+          value: undefined
+        }
+      },
+      listeners: {
+        'iron-resize': '_resizeHandler'
+      },
+      observers: [
+        '_updateLayout(minColumnWidth, rowHeight, gutter, maxColumnWidth, maxColumnNumber)'
+      ],
+      attached: function() {
+        this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumnNumber);
+      },
+      _resizeHandler: function() {
+        this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumnNumber);
+      },
+      _updateLayout: function(minColumnWidth, rowHeight, gutter, maxColumnWidth, maxColumnNumber) {
+        this._clientWidth = this.clientWidth;
+        var colNumber = Math.floor(Math.max(1, this._clientWidth / ((this.minColumnWidth + 2 * this.gutter) || 1)));
+        this._setColumns(this.maxColumnNumber > 0 ? Math.min(colNumber, maxColumnNumber) : colNumber);
+
+        this._updateCustomStyles();
+      },
+      _updateCustomStyles: function() {
+        var maxWidth, maxColumnWidth = 'none';
+        var rowHeight = 'initial';
+        if (this.maxColumnWidth > 0 && this.maxColumnNumber > 0) {
+          maxWidth = (this.maxColumnNumber * this.maxColumnWidth) + (2 * this.maxColumnNumber * this.gutter) + 'px';
+          if (this.columns == this.maxColumnNumber) {
+            maxColumnWidth = this.maxColumnWidth + 'px';
+          }
+        }
+
+        var colWidth = Math.floor((this._clientWidth - (this.columns * 2 * this.gutter)) / this.columns);
+
+        if (this.rowHeight) {
+          // rowHeight in 'cw' (column width percentage)
+          if (this.rowHeight.substr(this.rowHeight.length-2, this.rowHeight.length-1) === 'cw') {
+            rowHeight = this.rowHeight.substr(0, this.rowHeight.length-2);
+            if (isNaN(rowHeight)) {
+              throw 'rowHeight "' + this.rowHeight + '" is invalid.';
+            } else {
+              rowHeight = (Number(rowHeight) / 100 * colWidth) + 'px';
+            }
+          } else {
+            // rowHeight in any other unit
+            rowHeight = this.rowHeight;
+          }
+        }
+
+        this.updateStyles({
+          '--grid-column-width': colWidth + 'px',
+          '--grid-row-height': rowHeight,
+          '--grid-gutter': this.gutter + 'px',
+          '--grid-max-width': maxWidth,
+          '--grid-column-max-width': maxColumnWidth
+        });
+      }
+    });
+  })();
+  </script>
+
+</dom-module>
