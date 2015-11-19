@@ -1,4 +1,4 @@
-# &ltgrid-layout&gt;
+# &lt;grid-layout&gt;
 
 _A simple responsive and adaptive grid layout.
 The adaptive breakpoints are defined by the minimum width of the columns.

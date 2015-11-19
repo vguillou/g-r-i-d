@@ -22,16 +22,19 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
 @demo demo/index.html
 -->
 <dom-module id="grid-layout">
-
   <template>
     <style>
       :host {
+        display: table;
+        margin: 0 auto;
+      }
+      :host > #container {
         @apply(--layout-horizontal);
         @apply(--layout-wrap);
         max-width: var(--grid-max-width);
-        margin: 0 auto;
+        padding: 0;
       }
-      :host > ::content > * {
+      :host > #container > ::content > * {
         @apply(--layout-flex-none);
         width: var(--grid-column-width);
         max-width: var(--grid-column-max-width);
@@ -39,18 +42,22 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
         margin: var(--grid-gutter);
         box-sizing: border-box;
       }
-      :host([columns="1"]) {
+      :host([no-outer-gutter]) > #container {
+        margin: calc(var(--grid-gutter) * -1);
+      },
+      :host([columns="1"]) > #container {
         max-width: none;
         margin: 0 var(--grid-gutter);
       }
-      :host([columns="1"]) > ::content > * {
-        width: 100% !important;
+      :host([columns="1"]) > #container > ::content > * {
+        width: calc(100% - 2 * var(--grid-gutter))  !important;
         min-width: initial !important;
         max-width: none;
-        margin: var(--grid-gutter) 0;
       }
     </style>
-    <content></content>
+    <div id="container">
+      <content></content>
+    </div>
   </template>
 
   <script>
@@ -75,7 +82,8 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
          */
         minColumnWidth: {
           type: Number,
-          value: 300
+          value: 300,
+          observer: 'refresh'
         },
         /**
          * The height of the rows.
@@ -94,21 +102,24 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
          */
         rowHeight: {
           type: String,
-          value: undefined
+          value: undefined,
+          observer: 'refresh'
         },
         /**
          * The gutter width in px.
          */
         gutter: {
           type: Number,
-          value: 4
+          value: 4,
+          observer: 'refresh'
         },
         /**
          * The maximum number of columns to display.
          */
         maxColumnNumber: {
           type: Number,
-          value: undefined
+          value: undefined,
+          observer: 'refresh'
         },
         /**
          * The maximum width of the columns in px.
@@ -119,26 +130,40 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
          */
         maxColumnWidth: {
           type: Number,
-          value: undefined
-        }
+          value: undefined,
+          observer: 'refresh'
+        },
+        /**
+         * Removes the outer gutter.
+         */
+        noOuterGutter: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          observer: 'refresh'
+        },
       },
       listeners: {
-        'iron-resize': '_resizeHandler'
+        'iron-resize': 'refresh'
       },
-      observers: [
-        '_updateLayout(minColumnWidth, rowHeight, gutter, maxColumnWidth, maxColumnNumber)'
-      ],
-      attached: function() {
-        this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumnNumber);
-      },
-      _resizeHandler: function() {
-        this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumnNumber);
-      },
-      _updateLayout: function(minColumnWidth, rowHeight, gutter, maxColumnWidth, maxColumnNumber) {
-        this._clientWidth = this.clientWidth;
-        var colNumber = Math.floor(Math.max(1, this._clientWidth / ((this.minColumnWidth + 2 * this.gutter) || 1)));
-        this._setColumns(this.maxColumnNumber > 0 ? Math.min(colNumber, maxColumnNumber) : colNumber);
 
+      /**
+       * Triggers the refresh of all the mensuration of the grid.
+       * Call if you modify the CSS width, padding or margin properties of the element.
+       */
+      refresh: function() {
+        this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumnNumber, this.noOuterGutter);
+      },
+
+      attached: function() {
+        this.async(function() {
+          this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumnNumber, this.noOuterGutter);
+        }, 10);
+      },
+      _updateLayout: function(minColumnWidth, rowHeight, gutter, maxColumnWidth, maxColumnNumber, noOuterGutter) {
+        this._width = this.$.container.clientWidth;
+        var colNumber = Math.floor(Math.max(1, (this._width + (noOuterGutter ? 2 * this.gutter : 0)) / (this.minColumnWidth + 2 * this.gutter || 1)));
+        this._setColumns(this.maxColumnNumber > 0 ? Math.min(colNumber, maxColumnNumber) : colNumber);
         this._updateCustomStyles();
       },
       _updateCustomStyles: function() {
@@ -151,7 +176,7 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
           }
         }
 
-        var colWidth = Math.floor((this._clientWidth - (this.columns * 2 * this.gutter)) / this.columns);
+        var colWidth = (this._width - ((2 * this.columns)) * this.gutter) / this.columns;
 
         if (this.rowHeight) {
           // rowHeight in 'cw' (column width percentage)
@@ -179,5 +204,4 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
     });
   })();
   </script>
-
 </dom-module>

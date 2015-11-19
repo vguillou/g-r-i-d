@@ -29,6 +29,7 @@
     }
 
     p.title {
+      display: inline-block;
       width: 100%;
       text-align: center;
       font-weight: bold;
@@ -42,28 +43,28 @@
     }
 
     /* example4 */
-    #example4 > .grid-item {
+    #example4 .grid-item {
       background-color: #f44336;
       color: white;
     }
-    #example4[columns='2'] > .grid-item {
+    #example4[columns='2'] .grid-item {
       background-color: #4caf50;
     }
-    #example4[columns='3'] > .grid-item {
+    #example4[columns='3'] .grid-item {
       background-color: #3f51b5;
     }
 
     /* example5 */
-    #example5 > .grid-item {
+    #example5 .grid-item {
       background-color: #f44336;
       color: white;
     }
-    #example5[columns='2'] > .grid-item:nth-of-type(3n - 2) { /* Every third item, starting from the first */
+    #example5[columns='2'] .grid-item:nth-of-type(3n - 2) { /* Every third item, starting from the first */
       max-width: none; /* very important */
       width: calc(100% - 2 * 2px); /* 100% - 2 * gutter */
       background-color: #4caf50;
     }
-    #example5[columns='3'] > .grid-item:nth-of-type(4n - 3) { /* Every fourth item, starting from the first */
+    #example5[columns='3'] .grid-item:nth-of-type(4n - 3) { /* Every fourth item, starting from the first */
       max-width: none; /* very important */
       width: calc(100% - 2 * 2px); /* 100% - 2 * gutter */
       background-color: #3f51b5;
@@ -73,14 +74,18 @@
 <body unresolved>
 
   <template is="dom-bind" id="demo">
+    <div>
+      <p class="title"><input type="checkbox" name="vehicle" checked="{{noOuterGutter::change}}"> No outer gutter for all examples</p>
+    </div>
 
     <div>
+      <hr/>
       <p class="title">Example 1</p>
       <p>"As many columns as possible, which are at least 250px large, with 4px gutters"</p> 
       <p>min-column-width="250" gutter="4"</p>
     </div>
 
-    <grid-layout min-column-width="250" gutter="4">
+    <grid-layout min-column-width="250" gutter="4" no-outer-gutter="{{noOuterGutter}}">
       <template is="dom-repeat" items="[[items]]">
         <span class="grid-item">[[item]]</span>
       </template>
@@ -93,7 +98,7 @@
       <p>min-column-width="150" gutter="1" max-column-number="3" max-column-width="200" row-height="100cw"</p>
     </div>
 
-    <grid-layout min-column-width="150" gutter="1" max-column-number="3" max-column-width="200" row-height="100cw">
+    <grid-layout min-column-width="150" gutter="1" max-column-number="3" max-column-width="200" row-height="100cw" no-outer-gutter="{{noOuterGutter}}">
       <template is="dom-repeat" items="[[items]]">
         <span class="grid-item">[[item]]</span>
       </template>
@@ -106,7 +111,7 @@
       <p>max-column-number="1" gutter="16"</p>
     </div>
 
-    <grid-layout max-column-number="1" gutter="16" row-height='50px'>
+    <grid-layout max-column-number="1" gutter="16" row-height='50px' no-outer-gutter="{{noOuterGutter}}">
       <template is="dom-repeat" items="[[items]]">
         <span class="grid-item">[[item]]</span>
       </template>
@@ -119,7 +124,7 @@
       <p>See CSS for "example4"</p>
     </div>
 
-    <grid-layout id="example4" min-column-width="200" gutter="2" max-column-number="3" max-column-width="400">
+    <grid-layout id="example4" min-column-width="200" gutter="2" max-column-number="3" max-column-width="400" no-outer-gutter="{{noOuterGutter}}">
       <template is="dom-repeat" items="[[items]]">
         <span class="grid-item">[[item]]</span>
       </template>
@@ -132,7 +137,7 @@
       <p>See CSS for "example5"</p>
     </div>
 
-    <grid-layout id="example5" min-column-width="200" gutter="2" max-column-number="3" max-column-width="400" row-height="50cw">
+    <grid-layout id="example5" min-column-width="200" gutter="2" max-column-number="3" max-column-width="400" row-height="50cw" no-outer-gutter="{{noOuterGutter}}">
       <template is="dom-repeat" items="[[items]]">
         <span class="grid-item">[[item]]</span>
       </template>
