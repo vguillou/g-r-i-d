@@ -3,25 +3,25 @@
 <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
 
 <!--
-A simple responsive and adaptive grid layout.
+A simple, configurable, responsive and adaptive grid layout.
 The adaptive breakpoints are defined by the minimum width of the columns.
 Gutter size, row height, grid items aspect-ratio and maximum width are
 all easily manageable.
 
 Exemple: A grid with square 150px items, separated by 4px gutters. 
 
-    <grid-layout min-column-width="150" gutter="4" row-height="100cw">
+    <g-r-i-d min-column-width="150" gutter="4" row-height="100cw">
       <div class="item"></div>
       <div class="item"></div>
       <div class="item"></div>
       <div class="item"></div>
       <div class="item"></div>
-    </grid-layout>
+    </g-r-i-d>
 
-@element grid-layout
+@element g-r-i-d
 @demo demo/index.html
 -->
-<dom-module id="grid-layout">
+<dom-module id="g-r-i-d">
   <template>
     <style>
       :host {
@@ -64,7 +64,7 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
   (function() {
     'use strict';  
     Polymer({
-      is: 'grid-layout',
+      is: 'g-r-i-d',
       behaviors: [Polymer.IronResizableBehavior],
       properties: {
         /**

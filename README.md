@@ -1,6 +1,6 @@
-# &lt;grid-layout&gt;
+# &lt;g-r-i-d&gt;
 
-_A simple responsive and adaptive grid layout.
+_A simple, configurable, responsive and adaptive grid layout.
 The adaptive breakpoints are defined by the minimum width of the columns.
 Gutter size, row height, grid items aspect-ratio and maximum width are all easily manageable._
 
@@ -9,11 +9,11 @@ Gutter size, row height, grid items aspect-ratio and maximum width are all easil
 Element dependencies are managed via [Bower](http://bower.io/). To install this element,
 use this command
 
-    bower install --save grid-layout
+    bower install --save g-r-i-d
 
 
 ## Documentation and demo
 
-Please refer to the <a href="https://vguillou.github.io/webcomponents/grid-layout/">component page</a> for more informations.
+Please refer to the <a href="https://vguillou.github.io/webcomponents/g-r-i-d/">component page</a> for more informations.
 
-Demos available <a href="https://vguillou.github.io/webcomponents/grid-layout/demo">here</a>.
+Demos available <a href="https://vguillou.github.io/webcomponents/g-r-i-d/demo">here</a>.

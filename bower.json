@@ -1,16 +1,16 @@
 {
-  "name": "grid-layout",
-  "version": "1.0.0",
+  "name": "g-r-i-d",
+  "version": "1.0.1",
   "authors": [
     "Vincent Guillou <vin.guillou@gmail.com>"
   ],
-  "description": "A simple responsive and adaptive grid layout. The adaptive breakpoints are defined by the minimum width of the columns. Gutter size, row height, grid items aspect-ratio and maximum width are all easily manageable.",
+  "description": "A simple, configurable, responsive and adaptive grid layout. The adaptive breakpoints are defined by the minimum width of the columns. Gutter size, row height, grid items aspect-ratio and maximum width are all easily manageable.",
   "keywords": [
-    "grid", "layout", "grid-layout", "polymer", "web-components", "web-component", "web components", "web component"
+    "grid", "g-r-i-d", "layout", "grid layout", "grid-layout", "polymer", "web-components", "web-component", "web components", "web component"
   ],
-  "main": "grid-layout.html",
+  "main": "g-r-i-d.html",
   "license": "MIT",
-  "homepage": "https://github.com/vguillou/grid-layout/",
+  "homepage": "https://github.com/vguillou/g-r-i-d/",
   "ignore": [
     "/.*",
     "/test/",
@@ -19,7 +19,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/vguillou/grid-layout.git"
+    "url": "git://github.com/vguillou/g-r-i-d.git"
   },
   "dependencies": {
     "polymer": "Polymer/polymer#^1.2.0",

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>grid-layout demo</title>
+  <title>g-r-i-d demo</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -10,7 +10,7 @@
   <meta name="theme-color" content="#f44336">
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="../grid-layout.html">
+  <link rel="import" href="../g-r-i-d.html">
 
   <style is="custom-style">
     html,
@@ -20,7 +20,7 @@
 
     html,
     body,
-    grid-layout {
+    g-r-i-d {
       padding: 0;
     }
 
@@ -85,11 +85,11 @@
       <p>min-column-width="250" gutter="4"</p>
     </div>
 
-    <grid-layout min-column-width="250" gutter="4" no-outer-gutter="{{noOuterGutter}}">
+    <g-r-i-d min-column-width="250" gutter="4" no-outer-gutter="{{noOuterGutter}}">
       <template is="dom-repeat" items="[[items]]">
         <span class="grid-item">[[item]]</span>
       </template>
-    </grid-layout>
+    </g-r-i-d>
 
     <div>
       <hr/>
@@ -98,11 +98,11 @@
       <p>min-column-width="150" gutter="1" max-column-number="3" max-column-width="200" row-height="100cw"</p>
     </div>
 
-    <grid-layout min-column-width="150" gutter="1" max-column-number="3" max-column-width="200" row-height="100cw" no-outer-gutter="{{noOuterGutter}}">
+    <g-r-i-d min-column-width="150" gutter="1" max-column-number="3" max-column-width="200" row-height="100cw" no-outer-gutter="{{noOuterGutter}}">
       <template is="dom-repeat" items="[[items]]">
         <span class="grid-item">[[item]]</span>
       </template>
-    </grid-layout>
+    </g-r-i-d>
 
     <div>
       <hr/>
@@ -111,11 +111,11 @@
       <p>max-column-number="1" gutter="16"</p>
     </div>
 
-    <grid-layout max-column-number="1" gutter="16" row-height='50px' no-outer-gutter="{{noOuterGutter}}">
+    <g-r-i-d max-column-number="1" gutter="16" row-height='50px' no-outer-gutter="{{noOuterGutter}}">
       <template is="dom-repeat" items="[[items]]">
         <span class="grid-item">[[item]]</span>
       </template>
-    </grid-layout>
+    </g-r-i-d>
 
     <div>
       <hr/>
@@ -124,11 +124,11 @@
       <p>See CSS for "example4"</p>
     </div>
 
-    <grid-layout id="example4" min-column-width="200" gutter="2" max-column-number="3" max-column-width="400" no-outer-gutter="{{noOuterGutter}}">
+    <g-r-i-d id="example4" min-column-width="200" gutter="2" max-column-number="3" max-column-width="400" no-outer-gutter="{{noOuterGutter}}">
       <template is="dom-repeat" items="[[items]]">
         <span class="grid-item">[[item]]</span>
       </template>
-    </grid-layout>
+    </g-r-i-d>
 
     <div>
       <hr/>
@@ -137,11 +137,11 @@
       <p>See CSS for "example5"</p>
     </div>
 
-    <grid-layout id="example5" min-column-width="200" gutter="2" max-column-number="3" max-column-width="400" row-height="50cw" no-outer-gutter="{{noOuterGutter}}">
+    <g-r-i-d id="example5" min-column-width="200" gutter="2" max-column-number="3" max-column-width="400" row-height="50cw" no-outer-gutter="{{noOuterGutter}}">
       <template is="dom-repeat" items="[[items]]">
         <span class="grid-item">[[item]]</span>
       </template>
-    </grid-layout>
+    </g-r-i-d>
 
   </template>
 
