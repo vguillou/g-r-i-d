@@ -19,6 +19,14 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
       <div class="item"></div>
     </g-r-i-d>
 
+### Styling
+
+The following custom properties and mixins are available for stylingt:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--grid-layout` | Mixin applied to the grid layout (flexbox).<br/>Particularly interesting to control how the items are justified.<br/>(e.g.: `justify-content: center;`). | `{}`
+
 @element g-r-i-d
 @demo demo/index.html
 -->
@@ -32,28 +40,32 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
       :host > #container {
         @apply(--layout-horizontal);
         @apply(--layout-wrap);
+        @apply(--grid-layout);
         max-width: var(--grid-max-width);
         padding: 0;
       }
       :host > #container > ::content > * {
         @apply(--layout-flex-none);
         width: var(--grid-column-width);
+        min-width: var(--grid-column-min-width);
         max-width: var(--grid-column-max-width);
         height: var(--grid-row-height);
         margin: var(--grid-gutter);
         box-sizing: border-box;
       }
-      :host([no-outer-gutter]) > #container {
-        margin: calc(var(--grid-gutter) * -1);
-      },
       :host([columns="1"]) > #container {
         max-width: none;
         margin: 0 var(--grid-gutter);
       }
       :host([columns="1"]) > #container > ::content > * {
         width: calc(100% - 2 * var(--grid-gutter))  !important;
-        min-width: initial !important;
         max-width: none;
+      }
+      :host([columns="1"][responsive-when-narrow]) > #container > ::content > * {
+        min-width: initial !important;
+      }
+      :host([no-outer-gutter]) > #container {
+        margin: calc(var(--grid-gutter) * -1);
       }
     </style>
     <div id="container">
@@ -84,6 +96,14 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
         minColumnWidth: {
           type: Number,
           value: 300,
+          observer: 'refresh'
+        },
+        /**
+         * The maximum width of the columns in px.
+         */
+        maxColumnWidth: {
+          type: Number,
+          value: undefined,
           observer: 'refresh'
         },
         /**
@@ -123,18 +143,6 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
           observer: 'refresh'
         },
         /**
-         * The maximum width of the columns in px.
-         * Only works in conjunction with `maxColumnNumber` to limit
-         * the total width and number of column of the grid.
-         * Is *not* applied when the number of columns is inferior
-         * to `maxColumnNumber`.
-         */
-        maxColumnWidth: {
-          type: Number,
-          value: undefined,
-          observer: 'refresh'
-        },
-        /**
          * Removes the outer gutter.
          */
         noOuterGutter: {
@@ -143,6 +151,18 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
           reflectToAttribute: true,
           observer: 'refresh'
         },
+        /**
+         * Indicates if the unique column should become responsive when the grid itself
+         * becomes narrower than `minColumnWidth`.
+         * Effectively removes the horizontal scrollbar when the grid's width
+         * is inferior to the specified `minColumnWidth`.
+         */
+        responsiveWhenNarrow: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          observer: 'refresh'
+        }
       },
       listeners: {
         'iron-resize': 'refresh'
@@ -153,53 +173,65 @@ Exemple: A grid with square 150px items, separated by 4px gutters.
        * Call if you modify the CSS width, padding or margin properties of the element.
        */
       refresh: function() {
-        this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumnNumber, this.noOuterGutter);
+        this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumnNumber, this.noOuterGutter, this.responsiveWhenNarrow);
       },
 
+      ready: function (){
+        Polymer.dom(this.$.container).observeNodes(function() {
+          this.refresh();
+        }.bind(this));
+      },
       attached: function() {
         this.async(function() {
-          this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumnNumber, this.noOuterGutter);
+          this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumnNumber, this.noOuterGutter, this.responsiveWhenNarrow);
         }, 10);
       },
-      _updateLayout: function(minColumnWidth, rowHeight, gutter, maxColumnWidth, maxColumnNumber, noOuterGutter) {
-        this._width = this.$.container.clientWidth;
-        var colNumber = Math.floor(Math.max(1, (this._width + (noOuterGutter ? 2 * this.gutter : 0)) / (this.minColumnWidth + 2 * this.gutter || 1)));
-        this._setColumns(this.maxColumnNumber > 0 ? Math.min(colNumber, maxColumnNumber) : colNumber);
+      _updateLayout: function(minColumnWidth, rowHeight, gutter, maxColumnWidth, maxColumnNumber, noOuterGutter, responsiveWhenNarrow) {
+        // Measuring the space availlable
+        var __sizingBase = this, //this.$.container;
+        __style = __sizingBase.currentStyle || window.getComputedStyle(__sizingBase),
+        __w = __sizingBase.offsetWidth,
+        __m = parseFloat(__style.marginLeft) + parseFloat(__style.marginRight),
+        __p = parseFloat(__style.paddingLeft) + parseFloat(__style.paddingRight);
+        this._width = __w + __m - __p;
+        // Calculate how much columns we can fit in
+        var __colNumber = Math.floor(Math.max(1, (this._width + (noOuterGutter ? 2 * gutter : 0)) / (minColumnWidth + 2 * gutter || 1)));
+        this._setColumns(maxColumnNumber > 0 ? Math.min(__colNumber, maxColumnNumber) : __colNumber);
+        // Update computed CSS properties
         this._updateCustomStyles();
       },
       _updateCustomStyles: function() {
-        var maxWidth, maxColumnWidth = 'none';
-        var rowHeight = 'initial';
-        if (this.maxColumnWidth > 0 && this.maxColumnNumber > 0) {
-          maxWidth = (this.maxColumnNumber * this.maxColumnWidth) + (2 * this.maxColumnNumber * this.gutter) + 'px';
-          if (this.columns == this.maxColumnNumber) {
-            maxColumnWidth = this.maxColumnWidth + 'px';
-          }
-        }
+        var __maxWidth = 'none',
+        __rowHeight = 'initial',
+        __colWidth = (this._width - ((2 * this.columns)) * this.gutter) / this.columns,
+        __colMaxWidth = this.maxColumnWidth > 0 ? this.maxColumnWidth : -1;
 
-        var colWidth = (this._width - ((2 * this.columns)) * this.gutter) / this.columns;
+        if (this.maxColumnWidth > 0) {
+          __maxWidth = (this.columns * this.maxColumnWidth) + (2 * this.columns * this.gutter) + 'px';
+        }
 
         if (this.rowHeight) {
           // rowHeight in 'cw' (column width percentage)
           if (this.rowHeight.substr(this.rowHeight.length-2, this.rowHeight.length-1) === 'cw') {
-            rowHeight = this.rowHeight.substr(0, this.rowHeight.length-2);
-            if (isNaN(rowHeight)) {
+            __rowHeight = this.rowHeight.substr(0, this.rowHeight.length-2);
+            if (isNaN(__rowHeight)) {
               throw 'rowHeight "' + this.rowHeight + '" is invalid.';
             } else {
-              rowHeight = (Number(rowHeight) / 100 * colWidth) + 'px';
+              __rowHeight = (Number(__rowHeight) / 100 * Math.min(__colWidth, this.maxColumnWidth > 0 ? this.maxColumnWidth : Number.MAX_VALUE)) + 'px';
             }
           } else {
             // rowHeight in any other unit
-            rowHeight = this.rowHeight;
+            __rowHeight = this.rowHeight;
           }
         }
 
         this.updateStyles({
-          '--grid-column-width': colWidth + 'px',
-          '--grid-row-height': rowHeight,
+          '--grid-column-width': __colWidth + 'px',
+          '--grid-column-min-width': (this.columns < 2 ? this.minColumnWidth + 'px' : 'initial'),
+          '--grid-column-max-width': (this.maxColumnWidth > 0 ? this.maxColumnWidth + 'px' : 'none'),
+          '--grid-row-height': __rowHeight,
           '--grid-gutter': this.gutter + 'px',
-          '--grid-max-width': maxWidth,
-          '--grid-column-max-width': maxColumnWidth
+          '--grid-max-width': __maxWidth
         });
       }
     });
