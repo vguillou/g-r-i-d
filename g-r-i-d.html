@@ -107,6 +107,14 @@ Custom property | Description | Default
           observer: 'refresh'
         },
         /**
+         * The maximum number of columns to display.
+         */
+        maxColumns: {
+          type: Number,
+          value: undefined,
+          observer: 'refresh'
+        },
+        /**
          * The height of the rows.
          * By default (or if `rowHeight` is `undefined`), each row
          * adapts it's height to it's content.
@@ -132,14 +140,6 @@ Custom property | Description | Default
         gutter: {
           type: Number,
           value: 4,
-          observer: 'refresh'
-        },
-        /**
-         * The maximum number of columns to display.
-         */
-        maxColumnNumber: {
-          type: Number,
-          value: undefined,
           observer: 'refresh'
         },
         /**
@@ -173,7 +173,7 @@ Custom property | Description | Default
        * Call if you modify the CSS width, padding or margin properties of the element.
        */
       refresh: function() {
-        this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumnNumber, this.noOuterGutter, this.responsiveWhenNarrow);
+        this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumns, this.noOuterGutter, this.responsiveWhenNarrow);
       },
 
       ready: function (){
@@ -183,43 +183,46 @@ Custom property | Description | Default
       },
       attached: function() {
         this.async(function() {
-          this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumnNumber, this.noOuterGutter, this.responsiveWhenNarrow);
+          this._updateLayout(this.minColumnWidth, this.rowHeight, this.gutter, this.maxColumnWidth, this.maxColumns, this.noOuterGutter, this.responsiveWhenNarrow);
         }, 10);
       },
-      _updateLayout: function(minColumnWidth, rowHeight, gutter, maxColumnWidth, maxColumnNumber, noOuterGutter, responsiveWhenNarrow) {
-        // Measuring the space availlable
-        var __sizingBase = this,
+      _updateLayout: function(minColumnWidth, rowHeight, gutter, maxColumnWidth, maxColumns, noOuterGutter, responsiveWhenNarrow) {
+        // Count items to display in the grid
+        var __gridItemsCount = Polymer.dom(this.$.container).queryDistributedElements('*').length,
+        // Measuring the space availlable·
+        __sizingBase = this,
         __style = __sizingBase.currentStyle || window.getComputedStyle(__sizingBase),
         __w = __sizingBase.offsetWidth,
         __m = parseFloat(__style.marginLeft) + parseFloat(__style.marginRight),
         __p = parseFloat(__style.paddingLeft) + parseFloat(__style.paddingRight),
         __b = parseFloat(__style.borderLeftWidth) + parseFloat(__style.borderRightWidth);
         this._width = __w + __m - __p - __b;
-        console.log(this._width, this.offsetWidth, this.$.container.offsetWidth, __b);
-        // Calculate how much columns we can fit in
-        var __colNumber = Math.floor(Math.max(1, (this._width + (noOuterGutter ? 2 * gutter : 0)) / (minColumnWidth + 2 * gutter || 1)));
-        this._setColumns(maxColumnNumber > 0 ? Math.min(__colNumber, maxColumnNumber) : __colNumber);
+        // Calculate how much columns we can fit in, or how many are necessary to display all items
+        this._outerGutterCount = noOuterGutter ? 2 : 0;
+        var __colNumber = Math.floor(Math.max(1, (this._width + this._outerGutterCount * gutter) / (minColumnWidth + 2 * gutter || 1)));
+        this._setColumns(Math.min(__gridItemsCount, __colNumber, maxColumns > 0 ? maxColumns : Number.MAX_VALUE));
+        this._innerGutterCount = 2 * this.columns;
         // Update computed CSS properties
         this._updateCustomStyles();
       },
       _updateCustomStyles: function() {
         var __maxWidth = 'none',
         __rowHeight = 'initial',
-        __colWidth = (this._width - (2 * this.columns - (this.noOuterGutter ? 2 : 0)) * this.gutter) / this.columns,
-        __colMaxWidth = this.maxColumnWidth > 0 ? this.maxColumnWidth : -1;
+        __colWidth = (this._width - (this._innerGutterCount - this._outerGutterCount) * this.gutter) / this.columns,
+        __hasColMaxWidth = this.maxColumnWidth > 0;
 
-        if (this.maxColumnWidth > 0) {
-          __maxWidth = (this.columns * this.maxColumnWidth) + (2 * this.columns * this.gutter) + 'px';
+        if (__hasColMaxWidth > 0) {
+          __maxWidth = (this.columns * this.maxColumnWidth) + (this._innerGutterCount * this.gutter) + 'px';
         }
 
         if (this.rowHeight) {
           // rowHeight in 'cw' (column width percentage)
-          if (this.rowHeight.substr(this.rowHeight.length-2, this.rowHeight.length-1) === 'cw') {
-            __rowHeight = this.rowHeight.substr(0, this.rowHeight.length-2);
+          if (this.rowHeight.substr(this.rowHeight.length - 2, this.rowHeight.length - 1) === 'cw') {
+            __rowHeight = this.rowHeight.substr(0, this.rowHeight.length - 2);
             if (isNaN(__rowHeight)) {
               throw 'rowHeight "' + this.rowHeight + '" is invalid.';
             } else {
-              __rowHeight = (Number(__rowHeight) / 100 * Math.min(__colWidth, this.maxColumnWidth > 0 ? this.maxColumnWidth : Number.MAX_VALUE)) + 'px';
+              __rowHeight = (Number(__rowHeight) / 100 * Math.min(__colWidth, __hasColMaxWidth > 0 ? this.maxColumnWidth : Number.MAX_VALUE)) + 'px';
             }
           } else {
             // rowHeight in any other unit
@@ -230,7 +233,7 @@ Custom property | Description | Default
         this.updateStyles({
           '--grid-column-width': __colWidth + 'px',
           '--grid-column-min-width': (this.columns < 2 ? this.minColumnWidth + 'px' : 'initial'),
-          '--grid-column-max-width': (this.maxColumnWidth > 0 ? this.maxColumnWidth + 'px' : 'none'),
+          '--grid-column-max-width': (__hasColMaxWidth ? this.maxColumnWidth + 'px' : 'none'),
           '--grid-row-height': __rowHeight,
           '--grid-gutter': this.gutter + 'px',
           '--grid-max-width': __maxWidth

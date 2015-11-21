@@ -113,9 +113,9 @@
       <hr/>
       <p class="title">Example 2</p>
       <p>"Square items and a maximum of 3 columns, which are at least 150px large (or max 200px large when max columns), with 1px gutters"</p> 
-      <p>min-column-width="150" gutter="1" max-column-number="3" max-column-width="200" row-height="100cw"</p>
+      <p>min-column-width="150" gutter="1" max-columns="3" max-column-width="200" row-height="100cw"</p>
     
-      <g-r-i-d min-column-width="150" gutter="1" max-column-number="3" max-column-width="200" row-height="100cw" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+      <g-r-i-d min-column-width="150" gutter="1" max-columns="3" max-column-width="200" row-height="100cw" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
         <template is="dom-repeat" items="[[items]]">
           <span class="grid-item">[[item]]</span>
         </template>
@@ -126,9 +126,9 @@
       <hr/>
       <p class="title">Example 3</p>
       <p>"Always 1 column of minimum 500px, 50px rows, with 16px gutters"</p> 
-      <p>max-column-number="1" gutter="16"</p>
+      <p>max-columns-number="1" gutter="16"</p>
 
-      <g-r-i-d min-column-width="500" max-column-number="1" gutter="16" row-height='50px' no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+      <g-r-i-d min-column-width="500" max-columns="1" gutter="16" row-height='50px' no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
         <template is="dom-repeat" items="[[items]]">
           <span class="grid-item">[[item]]</span>
         </template>
@@ -141,7 +141,7 @@
       <p>"Change color according to the number of columns displayed, center-justify items."</p> 
       <p>See CSS for "example4"</p>
 
-      <g-r-i-d id="example4" min-column-width="200" gutter="2" max-column-number="3" max-column-width="400" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+      <g-r-i-d id="example4" min-column-width="200" gutter="2" max-columns="3" max-column-width="400" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
         <template is="dom-repeat" items="[[items]]">
           <span class="grid-item">[[item]]</span>
         </template>
@@ -154,7 +154,7 @@
       <p>"Change size of every nth item, according to the number of columns displayed"</p> 
       <p>See CSS for "example5"</p>
 
-      <g-r-i-d id="example5" min-column-width="200" gutter="2" max-column-number="3" max-column-width="400" row-height="50cw" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+      <g-r-i-d id="example5" min-column-width="200" gutter="2" max-columns="3" max-column-width="400" row-height="50cw" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
         <template is="dom-repeat" items="[[items]]">
           <span class="grid-item">[[item]]</span>
         </template>
