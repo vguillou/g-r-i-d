@@ -188,12 +188,14 @@ Custom property | Description | Default
       },
       _updateLayout: function(minColumnWidth, rowHeight, gutter, maxColumnWidth, maxColumnNumber, noOuterGutter, responsiveWhenNarrow) {
         // Measuring the space availlable
-        var __sizingBase = this, //this.$.container;
+        var __sizingBase = this,
         __style = __sizingBase.currentStyle || window.getComputedStyle(__sizingBase),
         __w = __sizingBase.offsetWidth,
         __m = parseFloat(__style.marginLeft) + parseFloat(__style.marginRight),
-        __p = parseFloat(__style.paddingLeft) + parseFloat(__style.paddingRight);
-        this._width = __w + __m - __p;
+        __p = parseFloat(__style.paddingLeft) + parseFloat(__style.paddingRight),
+        __b = parseFloat(__style.borderLeftWidth) + parseFloat(__style.borderRightWidth);
+        this._width = __w + __m - __p - __b;
+        console.log(this._width, this.offsetWidth, this.$.container.offsetWidth, __b);
         // Calculate how much columns we can fit in
         var __colNumber = Math.floor(Math.max(1, (this._width + (noOuterGutter ? 2 * gutter : 0)) / (minColumnWidth + 2 * gutter || 1)));
         this._setColumns(maxColumnNumber > 0 ? Math.min(__colNumber, maxColumnNumber) : __colNumber);
@@ -203,7 +205,7 @@ Custom property | Description | Default
       _updateCustomStyles: function() {
         var __maxWidth = 'none',
         __rowHeight = 'initial',
-        __colWidth = (this._width - ((2 * this.columns)) * this.gutter) / this.columns,
+        __colWidth = (this._width - (2 * this.columns - (this.noOuterGutter ? 2 : 0)) * this.gutter) / this.columns,
         __colMaxWidth = this.maxColumnWidth > 0 ? this.maxColumnWidth : -1;
 
         if (this.maxColumnWidth > 0) {
