@@ -24,6 +24,10 @@
       padding: 0;
     }
 
+    /*g-r-i-d {
+      border-style: double;
+    }*/
+
     div.demoContainer {
       min-height: 400px;
     }
@@ -95,10 +99,10 @@
     <div class="demoContainer">
       <hr/>
       <p class="title">Example 1</p>
-      <p>"As many columns as possible, which are at least 250px large, with 4px gutters"</p> 
-      <p>min-column-width="250" gutter="4"</p>
+      <p>"As many columns as possible, which are at least 300px large, with 4px gutters"</p> 
+      <p>min-column-width="300" gutter="4"</p>
 
-      <g-r-i-d min-column-width="250" gutter="4" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+      <g-r-i-d min-column-width="300" gutter="4" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
         <template is="dom-repeat" items="[[items]]">
           <span class="grid-item">[[item]]</span>
         </template>
