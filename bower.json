@@ -1,12 +1,12 @@
 {
   "name": "g-r-i-d",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "authors": [
     "Vincent Guillou <vin.guillou@gmail.com>"
   ],
-  "description": "A simple, configurable, responsive and adaptive grid layout. The adaptive breakpoints are defined by the minimum width of the columns. Gutter size, row height, grid items aspect-ratio and maximum width are all easily manageable.",
+  "description": "A simple animated, configurable, responsive and adaptive grid layout. The adaptive breakpoints are defined by the minimum width of the columns. Gutter size, row height, grid items aspect-ratio and maximum width are all easily manageable.",
   "keywords": [
-    "grid", "g-r-i-d", "layout", "grid layout", "grid-layout", "polymer", "web-components", "web-component", "web components", "web component"
+    "grid", "g-r-i-d", "layout", "grid layout", "grid-layout", "polymer", "animation", "animated", "web-components", "web-component", "web components", "web component"
   ],
   "main": "g-r-i-d.html",
   "license": "MIT",
@@ -24,7 +24,8 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^1.2.0",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.0",
-    "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^1.0.0"
+    "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^1.0.0",
+    "neon-animation": "PolymerElements/neon-animation#^1.0.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

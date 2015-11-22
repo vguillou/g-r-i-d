@@ -16,6 +16,7 @@
   <link rel="import" href="../../paper-scroll-header-panel/paper-scroll-header-panel.html">
   <link rel="import" href="../../paper-toolbar/paper-toolbar.html">
   <link rel="import" href="../g-r-i-d.html">
+  <link rel="import" href="../slim-g-r-i-d.html">
 
   <style is="custom-style">
     html,
@@ -155,9 +156,12 @@
             <span>rowHeight (e.g. 100cw)</span>
             <input type="text" value="{{ex1RowHeight::change}}" onchange="inputChange()">
           </div>
+          <div class="input">
+            <input type="checkbox" checked="{{ex1Shown::change}}"> Grid shown (animation)
+          </div>
         </div>
 
-        <g-r-i-d id="example1" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+        <g-r-i-d id="example1" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}" shown="{{ex1Shown}}">
           <template is="dom-repeat" items="[[items]]">
             <span class="grid-item">[[item]]</span>
           </template>
@@ -205,11 +209,11 @@
 
       <div class="demoContainer">
         <hr>
-        <p class="title">Example 5</p>
+        <p class="title">Example 5 (slim-g-r-i-d)</p>
         <p>"Change color according to the number of columns displayed, center-justify items."</p> 
         <p>See CSS for "example4"</p>
 
-        <g-r-i-d id="example5" min-column-width="200" gutter="2" max-columns="3" max-column-width="400" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+        <slim-g-r-i-d id="example5" min-column-width="200" gutter="2" max-columns="3" max-column-width="400" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
           <template is="dom-repeat" items="[[items]]">
             <span class="grid-item">[[item]]</span>
           </template>
@@ -218,11 +222,11 @@
 
       <div class="demoContainer">
         <hr>
-        <p class="title">Example 6</p>
+        <p class="title">Example 6 (slim-g-r-i-d)</p>
         <p>"Change size of every nth item, according to the number of columns displayed"</p> 
         <p>See CSS for "example5"</p>
 
-        <g-r-i-d id="example6" min-column-width="200" gutter="2" max-columns="3" max-column-width="400" row-height="50cw" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+        <slim-g-r-i-d id="example6" min-column-width="200" gutter="2" max-columns="3" max-column-width="400" row-height="50cw" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
           <template is="dom-repeat" items="[[items]]">
             <span class="grid-item">[[item]]</span>
           </template>
@@ -245,6 +249,7 @@
       '7- Hej världen'];
     demo.ex1MinColWidth = 300;
     demo.ex1Gutter = 4;
+    demo.ex1Shown = true;
     
     demo.addItem = function() {
       demo.push('items', (demo.items.length + 1) + '- Hello world');

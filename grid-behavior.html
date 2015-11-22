@@ -144,13 +144,15 @@
         this.debounce('updateLayout', this._updateLayout, 10);
       },
 
-      ready: function( ){
-        Polymer.dom(this._getGridContainer()).observeNodes(function() {
-          this.refresh();
-        }.bind(this));
+      ready: function() {
+        this._observer = this.refresh.bind(this);
+        Polymer.dom(this._getGridContainer()).observeNodes(this._observer);
       },
       attached: function() {
         this.refresh();
+      },
+      detached: function() {
+        Polymer.dom(this._getGridContainer()).unobserveNodes(this._observer);
       },
       _measure: function() {
         var __container = this._getGridContainer();

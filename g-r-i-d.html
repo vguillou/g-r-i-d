@@ -1,8 +1,12 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="grid-behavior.html">
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="../neon-animation/animations/cascaded-animation.html">
+<link rel="import" href="../neon-animation/animations/transform-animation.html">
 
 <!--
-A simple, configurable, responsive and adaptive grid layout.
+A simple animated, configurable, responsive and adaptive grid layout.
 The adaptive breakpoints are defined by the minimum width of the columns.
 Gutter size, row height, grid items aspect-ratio and maximum width are
 all easily manageable.
@@ -83,7 +87,102 @@ Custom property | Description | Default
     'use strict';
     Polymer({
       is: 'g-r-i-d',
-      behaviors: [Polymer.GridBehavior],
+      behaviors: [Polymer.GridBehavior,Polymer.NeonAnimationRunnerBehavior,Polymer.NeonAnimatableBehavior],
+      properties: {
+        /**
+         * Flag controlling the appearance/disappearance of the grid.
+         * Triggers the animation.
+         */
+        shown: {
+          type: Boolean,
+          value: true,
+          observer: '_shownChanged'
+        },
+        /**
+         * The appearance/disappearance animations configuration.
+         * Standard neon-animation definition.
+         * By default, entry animation is a cascade, exit animation
+         * translates all the grid down.
+         */
+        animationConfig: {
+          value: function() {
+            return {
+              'entry': [{
+                name: 'cascaded-animation',
+                animation: 'transform-animation',
+                transformFrom: 'translateY(100vh)',
+                transformTo: 'none'
+              }],
+              'exit': [{
+                name: 'transform-animation',
+                transformFrom: 'none',
+                transformTo: 'translateY(100vh)'
+              }]
+            };
+          }
+        }
+      },
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+      /**
+       * Computes the delay between each itesm for cascaded animations.
+       * Default is 750ms / number of items.
+       * You can override this function to customize this delay.
+       */
+      computeNodeDelay: function(itemsNumber, timing) {
+        return (Math.round(750 / itemsNumber));
+      },
+      /**
+       * Reveals the grid (with animation).
+       */
+      show: function() {
+        if (!this.shown) {
+          this.shown = true;
+          return;
+        }
+        if (this.animationConfig && this.animationConfig['entry']) {
+          this.animationConfig['entry'] = [].concat(this.animationConfig['entry']);
+          this.animationConfig['entry'].forEach(this._setAnimationConfigTargets.bind(this));
+          this.cancelAnimation();
+          this.playAnimation('entry');
+          this.style.visibility = 'visible';
+        }
+      },
+      /**
+       * Hides the grid (with animation).
+       */
+      hide: function() {
+        if (this.shown) {
+          this.shown = false;
+          return;
+        }
+        if (this.animationConfig && this.animationConfig['exit']) {
+          this.animationConfig['exit'] = [].concat(this.animationConfig['exit']);
+          this.animationConfig['exit'].forEach(this._setAnimationConfigTargets.bind(this));
+          this.cancelAnimation();
+          this.playAnimation('exit');
+        }
+      },
+      _setAnimationConfigTargets: function(animationConfig) {
+        if (animationConfig) {
+          animationConfig.node = this._getGridContainer();
+          animationConfig.nodes = Array.prototype.slice.call(this.itemsNodes);
+          animationConfig.nodeDelay = this.computeNodeDelay(animationConfig.nodes.length, animationConfig.timing);
+        }
+      },
+      _shownChanged: function() {
+        if (this.shown) {
+          this.show();
+        } else {
+          this.hide();
+        }
+      },
+      _onNeonAnimationFinish: function() {
+        if (!this.shown) {
+          this.style.visibility = 'hidden';
+        }
+      },
       _getGridContainer: function() {
         return this.$.container;
       }

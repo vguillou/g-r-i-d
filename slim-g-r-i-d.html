@@ -1,0 +1,74 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="grid-behavior.html">
+
+<!--
+A slimmed down version of <g-r-i-d>, with less dependencies.
+Please refer to the documentation of <g-r-i-d>.
+The features that are absent here are :
+- Entry and exit animations
+
+@element slim-g-r-i-d
+@demo demo/index.html
+-->
+<dom-module id="slim-g-r-i-d">
+  <template>
+    <style>
+      :host {
+        display: table;
+        margin: 0 auto;
+        box-sizing: content-box;
+      }
+      :host(:not(.controlled-width)) {
+        width: calc(100% - var(--grid-outter-padding-border));
+      }
+      :host > #container {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        @apply(--grid-layout);
+        padding: 0;
+      }
+      :host > #container.controlled-width {
+        max-width: var(--grid-max-width);
+      }
+      :host > #container > ::content > * {
+        @apply(--layout-flex-none);
+        width: var(--grid-column-width);
+        min-width: var(--grid-column-min-width);
+        max-width: var(--grid-column-max-width);
+        height: var(--grid-row-height);
+        margin: var(--grid-gutter);
+        box-sizing: border-box;
+      }
+      :host([columns="1"]) > #container {
+        max-width: none;
+      }
+      :host([columns="1"]:not(.controlled-width)) > #container > ::content > *,
+      :host([columns="1"][responsive-when-narrow]) > #container > ::content > * {
+        max-width: none;
+        width: calc(100% - 2 * var(--grid-gutter))  !important;
+      }
+      :host([columns="1"][responsive-when-narrow]) > #container > ::content > * {
+        min-width: initial !important;
+      }
+      :host([no-outer-gutter]) > #container {
+        margin: calc(var(--grid-gutter) * -1);
+      }
+    </style>
+    <div id="container">
+      <content id="content"></content>
+    </div>
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+    Polymer({
+      is: 'slim-g-r-i-d',
+      behaviors: [Polymer.GridBehavior],
+      _getGridContainer: function() {
+        return this.$.container;
+      }
+    });
+  })();
+  </script>
+</dom-module>
