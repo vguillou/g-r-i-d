@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>g-r-i-d demo</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="msapplication-TileColor" content="#f44336">
+  <meta name="theme-color" content="#f44336">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
+  <link rel="import" href="../../iron-icons/iron-icons.html">
+  <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+  <link rel="import" href="../../paper-scroll-header-panel/paper-scroll-header-panel.html">
+  <link rel="import" href="../../paper-toolbar/paper-toolbar.html">
+  <link rel="import" href="../g-r-i-d.html">
+
+  <style is="custom-style">
+    html,
+    body {
+      margin: 0;
+    }
+
+    html,
+    body,
+    g-r-i-d {
+      padding: 0;
+    }
+
+    paper-scroll-header-panel {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    g-r-i-d {
+      border-style: double;
+    }
+
+    div.demoContainer {
+      min-height: 400px;
+      width: 100%;
+    }
+
+    div.input {
+      width: 250px;
+      margin: 4px;
+    }
+
+    p {
+      padding: 0 12px;
+    }
+
+    p.title {
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .grid-item {
+      background-color: #f48fb1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* example5 */
+    #example5 {
+      --grid-layout: {
+        /* center items horizontally */
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+      };
+    }
+    #example5 .grid-item {
+      background-color: #f44336;
+      color: white;
+    }
+    #example5[columns='2'] .grid-item {
+      background-color: #4caf50;
+    }
+    #example5[columns='3'] .grid-item {
+      background-color: #3f51b5;
+    }
+
+    /* example6 */
+    #example6 .grid-item {
+      background-color: #f44336;
+      color: white;
+    }
+    #example6[columns='2'] .grid-item:nth-of-type(3n - 2) { /* Every third item, starting from the first */
+      max-width: none; /* very important */
+      width: calc(100% - 2 * 2px); /* 100% - 2 * gutter */
+      background-color: #4caf50;
+    }
+    #example6[columns='3'] .grid-item:nth-of-type(4n - 3) { /* Every fourth item, starting from the first */
+      max-width: none; /* very important */
+      width: calc(100% - 2 * 2px); /* 100% - 2 * gutter */
+      background-color: #3f51b5;
+    }
+  </style>
+  
+<body unresolved>
+
+  <template is="dom-bind" id="demo">
+
+    <paper-scroll-header-panel id="headerPanel" class="flex" condenses keep-condensed-header>
+
+      <!-- Toolbar -->
+      <paper-toolbar id="mainToolbar" class="tall">
+        <paper-icon-button icon="arrow-back"></paper-icon-button>
+        <span class="flex"></span>
+        <paper-icon-button icon="search"></paper-icon-button>
+        <span class="bottom title">g-r-i-d</span>
+      </paper-toolbar>
+
+      <p class="title">
+        <input type="checkbox" checked="{{noOuterGutter::change}}"> No outer gutter for all examples
+        <br>
+        <input type="checkbox" checked="{{responsiveWhenNarrow::change}}"> Responsive when grid narrower than `minColumnWidth`
+      </p>
+
+      <div class="demoContainer">
+        <hr>
+        <p class="title">Example 1</p>
+        <p>Interactive demo :</p> 
+        <div class="layout horizontal center wrap">
+          <div class="layout vertical input">
+            <button on-tap="addOtherItem">+ Add item</button>
+            <button on-tap="removeOtherItem">- Remove item</button>
+          </div>
+          <div class="layout vertical input">
+            <span>minColumnWidth (in px, e.g. 300)</span>
+            <input type="number" value="{{ex1MinColWidth::change}}" onchange="inputChange()">
+          </div>
+          <div class="layout vertical input">
+            <span>maxColumnWidth (in px, e.g. 400)</span>
+            <input type="number" value="{{ex1MaxColWidth::change}}" onchange="inputChange()">
+          </div>
+          <div class="layout vertical input">
+            <span>maxColumns (e.g. 3)</span>
+            <input type="number" value="{{ex1MaxColumns::change}}" onchange="inputChange()">
+          </div>
+          <div class="layout vertical input">
+            <span>gutter (in px, e.g. 4)</span>
+            <input type="number" value="{{ex1Gutter::change}}" onchange="inputChange()">
+          </div>
+          <div class="layout vertical input">
+            <span>rowHeight (e.g. 100cw)</span>
+            <input type="text" value="{{ex1RowHeight::change}}" onchange="inputChange()">
+          </div>
+        </div>
+
+        <g-r-i-d id="example1" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+          <template is="dom-repeat" items="[[otherItems]]">
+            <span class="grid-item">[[item]]</span>
+          </template>
+        </g-r-i-d>
+      </div>
+
+      <div class="demoContainer">
+        <hr>
+        <p class="title">Example 2</p>
+        <p>"As many columns as possible, which are at least 300px large, with 4px gutters"</p> 
+        <p>min-column-width="300" gutter="4"</p>
+
+        <g-r-i-d id="example2" min-column-width="300" gutter="4" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+          <template is="dom-repeat" items="[[items]]">
+            <span class="grid-item">[[item]]</span>
+          </template>
+        </g-r-i-d>
+      </div>
+
+      <div class="demoContainer">
+        <hr>
+        <p class="title">Example 3</p>
+        <p>"Square items and a maximum of 3 columns, which are at least 150px large (or max 200px large when max columns), with 1px gutters"</p> 
+        <p>min-column-width="150" gutter="1" max-columns="3" max-column-width="200" row-height="100cw"</p>
+      
+        <g-r-i-d id="example3" min-column-width="150" gutter="1" max-columns="3" max-column-width="200" row-height="100cw" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+          <template is="dom-repeat" items="[[items]]">
+            <span class="grid-item">[[item]]</span>
+          </template>
+        </g-r-i-d>
+      </div>
+
+      <div class="demoContainer">
+        <hr>
+        <p class="title">Example 4</p>
+        <p>"Always 1 column of minimum 500px, 50px rows, with 16px gutters"</p> 
+        <p>max-columns-number="1" gutter="16"</p>
+
+        <g-r-i-d id="example4" min-column-width="500" max-columns="1" gutter="16" row-height='50px' no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+          <template is="dom-repeat" items="[[items]]">
+            <span class="grid-item">[[item]]</span>
+          </template>
+        </g-r-i-d>
+      </div>
+
+      <div class="demoContainer">
+        <hr>
+        <p class="title">Example 5</p>
+        <p>"Change color according to the number of columns displayed, center-justify items."</p> 
+        <p>See CSS for "example4"</p>
+
+        <g-r-i-d id="example5" min-column-width="200" gutter="2" max-columns="3" max-column-width="400" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+          <template is="dom-repeat" items="[[items]]">
+            <span class="grid-item">[[item]]</span>
+          </template>
+        </g-r-i-d>
+      </div>
+
+      <div class="demoContainer">
+        <hr>
+        <p class="title">Example 6</p>
+        <p>"Change size of every nth item, according to the number of columns displayed"</p> 
+        <p>See CSS for "example5"</p>
+
+        <g-r-i-d id="example6" min-column-width="200" gutter="2" max-columns="3" max-column-width="400" row-height="50cw" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
+          <template is="dom-repeat" items="[[items]]">
+            <span class="grid-item">[[item]]</span>
+          </template>
+        </g-r-i-d>
+      </div>
+
+    </paper-scroll-header-panel>
+
+  </template>
+
+  <script>
+    var demo = document.querySelector('#demo');
+    
+    demo.items = ['1- First!',
+      '2- Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+      '3- Hello world',
+      '4- Bonjour le monde',
+      '5- Hallo Welt',
+      '6- Hola mundo',
+      '7- Hej världen'];
+    demo.otherItems = ['1- Hello world'];
+    demo.ex1MinColWidth = 300;
+    demo.ex1Gutter = 4;
+    
+    demo.addOtherItem = function() {
+      demo.push('otherItems', (demo.otherItems.length + 1) + '- Hello world');
+    };
+
+    demo.removeOtherItem = function() {
+      if (demo.otherItems.length > 1) {
+        demo.pop('otherItems');
+      }
+    };
+
+    function inputChange() {
+      var grid = demo.$.example1;
+      demo.async(function() {
+        grid.minColumnWidth = Number(demo.ex1MinColWidth);
+        grid.maxColumnWidth = Number(demo.ex1MaxColWidth);
+        grid.maxColumns = Number(demo.ex1MaxColumns);
+        grid.gutter = Number(demo.ex1Gutter);
+        grid.rowHeight = demo.ex1RowHeight;
+      }, 100);
+    }
+  </script>
+
+</body>
+</html>
