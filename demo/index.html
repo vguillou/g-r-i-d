@@ -110,8 +110,8 @@
       <p>Interactive demo :</p> 
       <div class="layout horizontal center wrap">
         <div class="layout vertical input">
-          <button on-tap="addOtherItem">+ Add item</button>
-          <button on-tap="removeOtherItem">- Remove item</button>
+          <button on-tap="addItem">+ Add item</button>
+          <button on-tap="removeItem">- Remove item</button>
         </div>
         <div class="layout vertical input">
           <span>minColumnWidth (in px, e.g. 300)</span>
@@ -136,7 +136,7 @@
       </div>
 
       <g-r-i-d id="example1" no-outer-gutter="{{noOuterGutter}}" responsive-when-narrow="{{responsiveWhenNarrow}}">
-        <template is="dom-repeat" items="[[otherItems]]">
+        <template is="dom-repeat" items="[[items]]">
           <span class="grid-item">[[item]]</span>
         </template>
       </g-r-i-d>
@@ -213,23 +213,22 @@
     var demo = document.querySelector('#demo');
     
     demo.items = ['1- First!',
-      '2- Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      '2- Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       '3- Hello world',
       '4- Bonjour le monde',
       '5- Hallo Welt',
       '6- Hola mundo',
       '7- Hej världen'];
-    demo.otherItems = ['1- Hello world'];
     demo.ex1MinColWidth = 300;
     demo.ex1Gutter = 4;
     
-    demo.addOtherItem = function() {
-      demo.push('otherItems', (demo.otherItems.length + 1) + '- Hello world');
+    demo.addItem = function() {
+      demo.push('items', (demo.items.length + 1) + '- Hello world');
     };
 
-    demo.removeOtherItem = function() {
-      if (demo.otherItems.length > 1) {
-        demo.pop('otherItems');
+    demo.removeItem = function() {
+      if (demo.items.length > 1) {
+        demo.pop('items');
       }
     };
 

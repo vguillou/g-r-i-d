@@ -1,0 +1,237 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
+
+<script>
+
+  (function() {
+    'use strict';
+
+    /**
+     * Behavior for a simple, configurable, responsive and adaptive grid layout.
+     * The adaptive breakpoints are defined by the minimum width of the columns.
+     * Gutter size, row height, grid items aspect-ratio and maximum width are
+     * all easily manageable.
+     * Note that it is achieved with a column direction flexbox that wraps.
+     * 
+     * Example: A grid with square 150px items, separated by 4px gutters. 
+     * 
+     *     <g-r-i-d min-column-width="150" gutter="4" row-height="100cw">
+     *       <div class="item"></div>
+     *       <div class="item"></div>
+     *       <div class="item"></div>
+     *       <div class="item"></div>
+     *       <div class="item"></div>
+     *     </g-r-i-d>
+     * 
+     * ### Styling
+     * 
+     * The following custom properties and mixins are available for stylingt:
+     * 
+     * Custom property | Description | Default
+     * ----------------|-------------|----------
+     * `--grid-layout` | Mixin applied to the grid layout (flexbox).<br/>Particularly interesting to control how the items are justified.<br/>(e.g.: `justify-content: center;`). | `{}`
+     * 
+     * @polymerBehavior Polymer.GridBehavior
+     * @demo demo/index.html
+     */
+    Polymer.GridBehaviorImpl = {
+
+      properties: {
+        /**
+         * The effective number of columns of the grid.
+         * Read-only.
+         */
+        columns: {
+          type: Number,
+          notify: true,
+          reflectToAttribute: true,
+          readOnly: true
+        },
+        /**
+         * The minimun width of the columns in px.
+         */
+        minColumnWidth: {
+          type: Number,
+          value: 300,
+          observer: 'refresh'
+        },
+        /**
+         * The maximum width of the columns in px.
+         */
+        maxColumnWidth: {
+          type: Number,
+          value: NaN,
+          observer: 'refresh'
+        },
+        /**
+         * The maximum number of columns to display.
+         */
+        maxColumns: {
+          type: Number,
+          value: NaN,
+          observer: 'refresh'
+        },
+        /**
+         * The height of the rows.
+         * By default (or if `rowHeight` is `undefined`), each row
+         * adapts it's height to it's content.
+         * `rowHeight` can also be fixed with 2 kind of units:
+         * standards (px, em, etc...) and percentage of column width (cw).
+         * Example :
+         * <ul>
+         * <li>undefined => Each row adapts it's height to it's content.</li>
+         * <li>'150px' => All rows are 150px in height.</li>
+         * <li>'100cw' => Row height is equal to column width: grid items are squared.</li>
+         * <li>'50cw' => Row height is equal to half the column width:
+         * grid items are rectangular with a 2/1 aspact-ratio.</li>
+         * </ul>
+         */
+        rowHeight: {
+          type: String,
+          value: undefined,
+          observer: 'refresh'
+        },
+        /**
+         * The gutter width in px.
+         */
+        gutter: {
+          type: Number,
+          value: 4,
+          observer: 'refresh'
+        },
+        /**
+         * Removes the outer gutter.
+         */
+        noOuterGutter: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          observer: 'refresh'
+        },
+        /**
+         * Indicates if the unique column should become responsive when the grid itself
+         * becomes narrower than `minColumnWidth`.
+         * In other words, ignores `minColumnWidth` when only 1 column can be displayed.
+         * Effectively removes the horizontal scrollbar when the grid's width
+         * is inferior to the specified `minColumnWidth`.
+         */
+        responsiveWhenNarrow: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          observer: 'refresh'
+        }
+      },
+      listeners: {
+        'iron-resize': 'refresh'
+      },
+
+      /**
+       * Get an Array all the grid item nodes.
+       * Read-only.
+       */
+      get itemsNodes() {
+        // Still buggy... For some reason, Polymer dupplicates nodes on Safari and Firefox under certain conditions.
+        return Polymer.dom(this).queryDistributedElements('*:not(template):not(content)').reduce(function(a,b){if(a.indexOf(b)<0)a.push(b);return a;},[]);
+      },
+
+      /**
+       * Triggers the refresh of all the mensuration of the grid.
+       * Call if you modify the CSS width, padding or margin properties of the element.
+       */
+      refresh: function() {
+        this.debounce('updateLayout', this._updateLayout, 10);
+      },
+
+      ready: function( ){
+        Polymer.dom(this._getGridContainer()).observeNodes(function() {
+          this.refresh();
+        }.bind(this));
+      },
+      attached: function() {
+        this.refresh();
+      },
+      _measure: function() {
+        var __container = this._getGridContainer();
+        this.toggleClass('controlled-width', false, __container);
+        var __sizingBase = this,
+        __style = __sizingBase.currentStyle || window.getComputedStyle(__sizingBase),
+        __w = __sizingBase.offsetWidth,
+        __m = parseFloat(__style.marginLeft) + parseFloat(__style.marginRight),
+        __p = parseFloat(__style.paddingLeft) + parseFloat(__style.paddingRight),
+        __b = parseFloat(__style.borderLeftWidth) + parseFloat(__style.borderRightWidth);
+        this.toggleClass('controlled-width', true, __container);
+        this._outerPaddingBorder = __p + __b;
+        this._width = __w + __m - this._outerPaddingBorder;
+      },
+      _getRowHeight: function(columnWidth, maxColumnWidth) {
+        var __rowHeight = 'initial';
+        if (this.rowHeight) {
+          // rowHeight in 'cw' (column width percentage)
+          if (this.rowHeight.substr(this.rowHeight.length - 2, this.rowHeight.length - 1) === 'cw') {
+            __rowHeight = this.rowHeight.substr(0, this.rowHeight.length - 2);
+            if (isNaN(__rowHeight)) {
+              throw 'rowHeight "' + this.rowHeight + '" is invalid.';
+            } else {
+              __rowHeight = (Number(__rowHeight) / 100 * Math.min(columnWidth, maxColumnWidth > 0 ? this.maxColumnWidth : Number.MAX_VALUE)) + 'px';
+            }
+          } else {
+            // rowHeight in any other unit
+            __rowHeight = this.rowHeight;
+          }
+        }
+        return __rowHeight;
+      },
+      _updateLayout: function() {
+        var __minItemPlusGutterWidth = (this.minColumnWidth > 0 ? this.minColumnWidth : 0) + 2 * (this.gutter > 0 ? this.gutter : 0),
+        __maxColumnsNumber = this.maxColumns > 0 ? this.maxColumns : Number.MAX_VALUE;
+        // Measuring the space availlable·
+        this._measure();
+        // Count items to display in the grid
+        var __itemsCount = this.itemsNodes.length;
+        // Calculate how much columns we can fit in, or how many are necessary to display all items
+        this._outerGutterCount = this.noOuterGutter ? 2 : 0;
+        var __colNumber = Math.floor(Math.max(1, (this._width + this._outerGutterCount * this.gutter) / __minItemPlusGutterWidth));
+        this._setColumns(Math.min(__itemsCount, __colNumber, __maxColumnsNumber));
+        this._innerGutterCount = 2 * this.columns;
+        // Update computed CSS properties
+        this._updateCustomStyles();
+      },
+      _updateCustomStyles: function() {
+        var __maxWidth = 'none',
+        __colWidth = (this._width - (this._innerGutterCount - this._outerGutterCount) * this.gutter) / this.columns,
+        __hasColMaxWidth = this.maxColumnWidth > 0,
+        __rowHeight = this._getRowHeight(__colWidth, this.maxColumnWidth);
+        if (__hasColMaxWidth) {
+          __maxWidth = (this.columns * this.maxColumnWidth) + (this._innerGutterCount * this.gutter) + 'px';
+        }
+        this.toggleClass('controlled-width', __hasColMaxWidth);
+        this.updateStyles({
+          // Safari weirdness... width must not exceed max-width...
+          '--grid-column-width': Math.min(__colWidth, (__hasColMaxWidth ? this.maxColumnWidth : Number.MAX_VALUE)) + 'px',
+          '--grid-column-min-width': (this.minColumnWidth >= 0 ? this.minColumnWidth + 'px' : 'initial'),
+          '--grid-column-max-width': (__hasColMaxWidth ? this.maxColumnWidth + 'px' : 'none'),
+          '--grid-row-height': __rowHeight,
+          '--grid-gutter': this.gutter + 'px',
+          '--grid-max-width': __maxWidth,
+          '--grid-outter-padding-border': this._outerPaddingBorder + 'px'
+        });
+      },
+
+      /**
+       * To override if necessary.
+       */
+      _getGridContainer: function() {
+        return this;
+      }
+    };
+
+    /** @polymerBehavior Polymer.GridBehavior */
+    Polymer.GridBehavior = [
+      Polymer.IronResizableBehavior,
+      Polymer.GridBehaviorImpl
+    ];
+  })();
+  </script>
+</dom-module>
