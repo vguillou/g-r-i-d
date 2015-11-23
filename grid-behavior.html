@@ -141,7 +141,8 @@
        * Call if you modify the CSS width, padding or margin properties of the element.
        */
       refresh: function() {
-        this.debounce('updateLayout', this._updateLayout, 10);
+        //console.log('g-r-i-d refresh', this.minColumnWidth, this.maxColumnWidth, this.maxColumns, this.rowHeight, this.gutter, this.noOuterGutter, this.responsiveWhenNarrow);
+        this.debounce('updateLayout', this._updateLayout, 100);
       },
 
       ready: function() {
@@ -155,15 +156,15 @@
         Polymer.dom(this._getGridContainer()).unobserveNodes(this._observer);
       },
       _measure: function() {
-        var __container = this._getGridContainer();
-        this.toggleClass('controlled-width', false, __container);
+        this.toggleClass('controlled-width', false);
+        this.toggleClass('display-center', false);
         var __sizingBase = this,
         __style = __sizingBase.currentStyle || window.getComputedStyle(__sizingBase),
         __w = __sizingBase.offsetWidth,
         __m = parseFloat(__style.marginLeft) + parseFloat(__style.marginRight),
         __p = parseFloat(__style.paddingLeft) + parseFloat(__style.paddingRight),
         __b = parseFloat(__style.borderLeftWidth) + parseFloat(__style.borderRightWidth);
-        this.toggleClass('controlled-width', true, __container);
+        //console.log('g-r-i-d measure', __sizingBase.offsetWidth, __sizingBase.clientWidth, __sizingBase.scrollWidth, 'result', __w, __m, __p, __b);
         this._outerPaddingBorder = __p + __b;
         this._width = __w + __m - this._outerPaddingBorder;
       },
@@ -183,6 +184,7 @@
             __rowHeight = this.rowHeight;
           }
         }
+        //console.log('g-r-i-d rowHeight', __rowHeight);
         return __rowHeight;
       },
       _updateLayout: function() {
@@ -196,6 +198,7 @@
         this._outerGutterCount = this.noOuterGutter ? 2 : 0;
         var __colNumber = Math.floor(Math.max(1, (this._width + this._outerGutterCount * this.gutter) / __minItemPlusGutterWidth));
         this._setColumns(Math.min(__itemsCount, __colNumber, __maxColumnsNumber));
+        //console.log('g-r-i-d updateLayout', __itemsCount, __colNumber, __maxColumnsNumber);
         this._innerGutterCount = 2 * this.columns;
         // Update computed CSS properties
         this._updateCustomStyles();
@@ -209,6 +212,8 @@
           __maxWidth = (this.columns * this.maxColumnWidth) + (this._innerGutterCount * this.gutter) + 'px';
         }
         this.toggleClass('controlled-width', __hasColMaxWidth);
+        this.toggleClass('display-center', true);
+        this.toggleClass('controlled-width', true, this._getGridContainer());
         this.updateStyles({
           // Safari weirdness... width must not exceed max-width...
           '--grid-column-width': Math.min(__colWidth, (__hasColMaxWidth ? this.maxColumnWidth : Number.MAX_VALUE)) + 'px',

@@ -4,6 +4,7 @@
 <link rel="import" href="../neon-animation/neon-animatable-behavior.html">
 <link rel="import" href="../neon-animation/animations/cascaded-animation.html">
 <link rel="import" href="../neon-animation/animations/transform-animation.html">
+<link rel="import" href="../neon-animation/animations/fade-out-animation.html">
 
 <!--
 A simple animated, configurable, responsive and adaptive grid layout.
@@ -37,12 +38,15 @@ Custom property | Description | Default
   <template>
     <style>
       :host {
-        display: table;
-        margin: 0 auto;
         box-sizing: content-box;
       }
       :host(:not(.controlled-width)) {
+        display: inherit;
         width: calc(100% - var(--grid-outter-padding-border));
+      }
+      :host(.display-center) {
+        display: table;
+        margin: 0 auto;
       }
       :host > #container {
         @apply(--layout-horizontal);
@@ -76,6 +80,10 @@ Custom property | Description | Default
       :host([no-outer-gutter]) > #container {
         margin: calc(var(--grid-gutter) * -1);
       }
+      :host > #container.not-shown {
+        display: none !important;
+        opacity: 0 !important;
+      }
     </style>
     <div id="container">
       <content id="content"></content>
@@ -96,6 +104,8 @@ Custom property | Description | Default
         shown: {
           type: Boolean,
           value: true,
+          notify: true,
+          reflectToAttribute: true,
           observer: '_shownChanged'
         },
         /**
@@ -117,6 +127,8 @@ Custom property | Description | Default
                 name: 'transform-animation',
                 transformFrom: 'none',
                 transformTo: 'translateY(100vh)'
+              }, {
+                name: 'fade-out-animation'
               }]
             };
           }
@@ -146,7 +158,9 @@ Custom property | Description | Default
           this.animationConfig['entry'].forEach(this._setAnimationConfigTargets.bind(this));
           this.cancelAnimation();
           this.playAnimation('entry');
-          this.style.visibility = 'visible';
+          this.async(function() {
+            this.toggleClass('not-shown', false, this._getGridContainer());
+          }, 50);
         }
       },
       /**
@@ -166,7 +180,7 @@ Custom property | Description | Default
       },
       _setAnimationConfigTargets: function(animationConfig) {
         if (animationConfig) {
-          animationConfig.node = this._getGridContainer();
+          animationConfig.node = animationConfig.node || this._getGridContainer();
           animationConfig.nodes = Array.prototype.slice.call(this.itemsNodes);
           animationConfig.nodeDelay = this.computeNodeDelay(animationConfig.nodes.length, animationConfig.timing);
         }
@@ -180,7 +194,7 @@ Custom property | Description | Default
       },
       _onNeonAnimationFinish: function() {
         if (!this.shown) {
-          this.style.visibility = 'hidden';
+          this.toggleClass('not-shown', true, this._getGridContainer());
         }
       },
       _getGridContainer: function() {
