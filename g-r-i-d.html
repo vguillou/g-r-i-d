@@ -11,7 +11,9 @@ A simple animated, configurable, responsive and adaptive grid layout.
 The adaptive breakpoints are defined by the minimum width of the columns.
 Gutter size, row height, grid items aspect-ratio and maximum width are
 all easily manageable.
-Note that it is achieved with a column direction flexbox that wraps.
+For a slimmed down version of `<g-r-i-d>`, with less dependencies, please
+use `<slim-g-r-i-d>` (included).
+Note that the grid is achieved with a column direction flexbox that wraps.
 
 Example: A grid with square 150px items, separated by 4px gutters. 
 
@@ -31,6 +33,7 @@ Custom property | Description | Default
 ----------------|-------------|----------
 `--grid-layout` | Mixin applied to the grid layout (flexbox).<br/>Particularly interesting to control how the items are justified.<br/>(e.g.: `justify-content: center;`). | `{}`
 
+@group g-r-i-d
 @element g-r-i-d
 @demo demo/index.html
 -->
@@ -113,6 +116,10 @@ Custom property | Description | Default
          * Standard neon-animation definition.
          * By default, entry animation is a cascade, exit animation
          * translates all the grid down.
+         * For any combined animation (such as cascade) configuration,
+         * the nodes` property will be automatically set with the items
+         * of the grid. In other cases, the `node` will be set with
+         * the grid's container only if it's undefined.
          */
         animationConfig: {
           value: function() {
@@ -138,7 +145,8 @@ Custom property | Description | Default
         'neon-animation-finish': '_onNeonAnimationFinish'
       },
       /**
-       * Computes the delay between each itesm for cascaded animations.
+       * Computes the delay between each itesm for combined animations
+       * (such as the default cascaded animation).
        * Default is 750ms / number of items.
        * You can override this function to customize this delay.
        */

@@ -7,19 +7,23 @@ Please refer to the documentation of <g-r-i-d>.
 The features that are absent here are :
 - Entry and exit animations
 
+@group g-r-i-d
 @element slim-g-r-i-d
-@demo demo/index.html
+@demo demo/scroller-panel.html
 -->
 <dom-module id="slim-g-r-i-d">
   <template>
     <style>
       :host {
-        display: table;
-        margin: 0 auto;
         box-sizing: content-box;
       }
       :host(:not(.controlled-width)) {
+        display: inherit;
         width: calc(100% - var(--grid-outter-padding-border));
+      }
+      :host(.display-center) {
+        display: table;
+        margin: 0 auto;
       }
       :host > #container {
         @apply(--layout-horizontal);
