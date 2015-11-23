@@ -76,6 +76,9 @@ Custom property | Description | Default
       :host([no-outer-gutter]) > #container {
         margin: calc(var(--grid-gutter) * -1);
       }
+      :host > #container.not-shown {
+        display: none !important;
+      }
     </style>
     <div id="container">
       <content id="content"></content>
@@ -146,7 +149,7 @@ Custom property | Description | Default
           this.animationConfig['entry'].forEach(this._setAnimationConfigTargets.bind(this));
           this.cancelAnimation();
           this.playAnimation('entry');
-          this.style.visibility = 'visible';
+          this.toggleClass('not-shown', false, this._getGridContainer());
         }
       },
       /**
@@ -180,7 +183,7 @@ Custom property | Description | Default
       },
       _onNeonAnimationFinish: function() {
         if (!this.shown) {
-          this.style.visibility = 'hidden';
+          this.toggleClass('not-shown', true, this._getGridContainer());
         }
       },
       _getGridContainer: function() {
