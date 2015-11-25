@@ -132,8 +132,13 @@
        * Read-only.
        */
       get itemsNodes() {
-        // Still buggy... For some reason, Polymer dupplicates nodes on Safari and Firefox under certain conditions.
-        return Polymer.dom(this).queryDistributedElements('*:not(template):not(content)').reduce(function(a,b){if(a.indexOf(b)<0)a.push(b);return a;},[]);
+        var __selector = '*:not(template):not(content)',
+        __containerId = this._getGridContainer().getAttribute('id'),
+        // For some reason, Polymer dupplicates nodes on non-Chromium based browsers when using it's DOM API...
+        itemsNodes = this.querySelectorAll((__containerId ? '#' + __containerId + ' > ' : '') + __selector);
+        itemsNodes = itemsNodes.length ? itemsNodes : Polymer.dom(this).queryDistributedElements(__selector);
+        console.log('itemsNodes', __containerId, itemsNodes.length);
+        return itemsNodes;
       },
 
       /**
