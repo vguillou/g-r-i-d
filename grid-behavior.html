@@ -147,7 +147,7 @@
        */
       refresh: function() {
         //console.log('g-r-i-d refresh', this.minColumnWidth, this.maxColumnWidth, this.maxColumns, this.rowHeight, this.gutter, this.noOuterGutter, this.responsiveWhenNarrow);
-        this.debounce('updateLayout', this._updateLayout, 100);
+        this.debounce('updateLayout', this._updateLayout, 50);
       },
 
       ready: function() {
@@ -155,7 +155,7 @@
         Polymer.dom(this._getGridContainer()).observeNodes(this._observer);
       },
       attached: function() {
-        this.refresh();
+        this.async(this.refresh, 200);
       },
       detached: function() {
         Polymer.dom(this._getGridContainer()).unobserveNodes(this._observer);
@@ -164,7 +164,7 @@
         this.toggleClass('controlled-width', false);
         this.toggleClass('display-center', false);
         var __sizingBase = this,
-        __style = __sizingBase.currentStyle || window.getComputedStyle(__sizingBase),
+        __style = window.getComputedStyle(__sizingBase),
         __w = __sizingBase.offsetWidth,
         __m = parseFloat(__style.marginLeft) + parseFloat(__style.marginRight),
         __p = parseFloat(__style.paddingLeft) + parseFloat(__style.paddingRight),
@@ -194,7 +194,7 @@
       },
       _updateLayout: function() {
         var __minItemPlusGutterWidth = (this.minColumnWidth > 0 ? this.minColumnWidth : 0) + 2 * (this.gutter > 0 ? this.gutter : 0),
-        __maxColumnsNumber = this.maxColumns > 0 ? this.maxColumns : Number.MAX_VALUE;
+        __maxColumnsNumber = this.maxColumns > 0 ? Math.floor(this.maxColumns) : Number.MAX_VALUE;
         // Measuring the space availlable·
         this._measure();
         // Count items to display in the grid
@@ -211,24 +211,27 @@
       _updateCustomStyles: function() {
         var __maxWidth = 'none',
         __colWidth = (this._width - (this._innerGutterCount - this._outerGutterCount) * this.gutter) / this.columns,
-        __hasColMaxWidth = this.maxColumnWidth > 0,
+        __hasMaxColWidth = this.maxColumnWidth > 0,
         __rowHeight = this._getRowHeight(__colWidth, this.maxColumnWidth);
-        if (__hasColMaxWidth) {
-          __maxWidth = (this.columns * this.maxColumnWidth) + (this._innerGutterCount * this.gutter) + 'px';
+        if (__hasMaxColWidth) {
+          __maxWidth = this._floor((this.columns * this.maxColumnWidth) + (this._innerGutterCount * this.gutter)) + 'px';
         }
-        this.toggleClass('controlled-width', __hasColMaxWidth);
+        console.log('__hasMaxColWidth', __hasMaxColWidth, __maxWidth);
+        this.toggleClass('controlled-width', __hasMaxColWidth);
         this.toggleClass('display-center', true);
         this.toggleClass('controlled-width', true, this._getGridContainer());
         this.updateStyles({
           // Safari weirdness... width must not exceed max-width...
-          '--grid-column-width': Math.min(__colWidth, (__hasColMaxWidth ? this.maxColumnWidth : Number.MAX_VALUE)) + 'px',
-          '--grid-column-min-width': (this.minColumnWidth >= 0 ? this.minColumnWidth + 'px' : 'initial'),
-          '--grid-column-max-width': (__hasColMaxWidth ? this.maxColumnWidth + 'px' : 'none'),
+          '--grid-column-width': this._floor(Math.max(this.minColumnWidth >= 0 ? this.minColumnWidth : 0, Math.min(__colWidth, (__hasMaxColWidth ? this.maxColumnWidth : Number.MAX_VALUE)))) + 'px',
+          '--grid-column-max-width': (__hasMaxColWidth ? this._floor(this.maxColumnWidth) + 'px' : 'none'),
           '--grid-row-height': __rowHeight,
-          '--grid-gutter': this.gutter + 'px',
+          '--grid-gutter': this._floor(this.gutter) + 'px',
           '--grid-max-width': __maxWidth,
-          '--grid-outter-padding-border': this._outerPaddingBorder + 'px'
+          '--grid-outter-padding-border': this._floor(this._outerPaddingBorder) + 'px'
         });
+      },
+      _floor: function(dim) {
+        return Math.floor(dim * 10) / 10;
       },
 
       /**

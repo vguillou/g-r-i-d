@@ -63,7 +63,6 @@ Custom property | Description | Default
       :host > #container > ::content > * {
         @apply(--layout-flex-none);
         width: var(--grid-column-width);
-        min-width: var(--grid-column-min-width);
         max-width: var(--grid-column-max-width);
         height: var(--grid-row-height);
         margin: var(--grid-gutter);
@@ -72,13 +71,9 @@ Custom property | Description | Default
       :host([columns="1"]) > #container {
         max-width: none;
       }
-      :host([columns="1"]:not(.controlled-width)) > #container > ::content > *,
       :host([columns="1"][responsive-when-narrow]) > #container > ::content > * {
         max-width: none;
         width: calc(100% - 2 * var(--grid-gutter))  !important;
-      }
-      :host([columns="1"][responsive-when-narrow]) > #container > ::content > * {
-        min-width: initial !important;
       }
       :host([no-outer-gutter]) > #container {
         margin: calc(var(--grid-gutter) * -1);
