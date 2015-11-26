@@ -32,7 +32,6 @@
 
     div.demoContainer {
       min-height: 400px;
-      width: 100vw;
     }
 
     div.input {
@@ -116,23 +115,23 @@
         </div>
         <div class="layout vertical input">
           <span>minColumnWidth (in px, e.g. 300)</span>
-          <input type="number" value="{{ex1MinColWidth::change}}" onchange="inputChange()">
+          <input id="ex1MinColWidth" type="number" value="300" onchange="inputChange()">
         </div>
         <div class="layout vertical input">
           <span>maxColumnWidth (in px, e.g. 400)</span>
-          <input type="number" value="{{ex1MaxColWidth::change}}" onchange="inputChange()">
+          <input id="ex1MaxColWidth" type="number" value="" onchange="inputChange()">
         </div>
         <div class="layout vertical input">
           <span>maxColumns (e.g. 3)</span>
-          <input type="number" value="{{ex1MaxColumns::change}}" onchange="inputChange()">
+          <input id="ex1MaxColumns" type="number" value="" onchange="inputChange()">
         </div>
         <div class="layout vertical input">
           <span>gutter (in px, e.g. 4)</span>
-          <input type="number" value="{{ex1Gutter::change}}" onchange="inputChange()">
+          <input id="ex1Gutter" type="number" value="4" onchange="inputChange()">
         </div>
         <div class="layout vertical input">
           <span>rowHeight (e.g. 100cw)</span>
-          <input type="text" value="{{ex1RowHeight::change}}" onchange="inputChange()">
+          <input id="ex1RowHeight" type="text" value="" onchange="inputChange()">
         </div>
         <div class="input">
           <input type="checkbox" checked="{{ex1Shown::change}}"> Grid shown (animation)
@@ -223,8 +222,6 @@
       '5- Hallo Welt',
       '6- Hola mundo',
       '7- Hej världen'];
-    demo.ex1MinColWidth = 300;
-    demo.ex1Gutter = 4;
     demo.ex1Shown = true;
     
     demo.addItem = function() {
@@ -233,18 +230,19 @@
 
     demo.removeItem = function() {
       if (demo.items.length > 1) {
-        demo.pop('items');
-      }
+        var removed = demo.pop('items');
+    }
     };
 
     function inputChange() {
+    console.log('inputChange', demo.$.ex1MinColWidth.value);
       var grid = demo.$.example1;
       demo.async(function() {
-        grid.minColumnWidth = Number(demo.ex1MinColWidth);
-        grid.maxColumnWidth = Number(demo.ex1MaxColWidth);
-        grid.maxColumns = Number(demo.ex1MaxColumns);
-        grid.gutter = Number(demo.ex1Gutter);
-        grid.rowHeight = demo.ex1RowHeight;
+        grid.minColumnWidth = Number(demo.$.ex1MinColWidth.value);
+        grid.maxColumnWidth = Number(demo.$.ex1MaxColWidth.value);
+        grid.maxColumns = Number(demo.$.ex1MaxColumns.value);
+        grid.gutter = Number(demo.$.ex1Gutter.value);
+        grid.rowHeight = demo.$.ex1RowHeight.value;
       }, 100);
     }
   </script>
