@@ -162,7 +162,6 @@
       },
       _measure: function() {
         this.toggleClass('controlled-width', false);
-        this.toggleClass('display-center', false);
         var __sizingBase = this,
         __style = window.getComputedStyle(__sizingBase),
         __w = __sizingBase.offsetWidth,
@@ -210,16 +209,15 @@
       },
       _updateCustomStyles: function() {
         var __hasMaxColWidth = this.maxColumnWidth > 0,
-        __maxWidth = __hasMaxColWidth ? this._floor(this.columns * this.maxColumnWidth + this._innerGutterCount * this.gutter) + 'px' : 'none',
         __colWidth = (this._width - (this._innerGutterCount - this._outerGutterCount) * this.gutter) / this.columns;
         // Real column: supposed width <= max width
         __colWidth = Math.min(__colWidth, (__hasMaxColWidth ? this.maxColumnWidth : Number.MAX_VALUE));
         // Real column: supposed width >= min width unless responsiveWhenNarrow and 1 column to display only
         __colWidth = Math.max(__colWidth, (this.responsiveWhenNarrow && this.columns < 2 ? 0 : this.minColumnWidth));
+        var __maxWidth = __hasMaxColWidth ? this._floor(this.columns * Math.max(__colWidth, this.maxColumnWidth) + this._innerGutterCount * this.gutter) + 'px' : 'none';
         var __rowHeight = this._getRowHeight(__colWidth);
         
         this.toggleClass('controlled-width', __hasMaxColWidth);
-        this.toggleClass('display-center', true);
         this.toggleClass('controlled-width', true, this._getGridContainer());
         this.updateStyles({
           '--grid-column-width': this._floor(__colWidth) + 'px',

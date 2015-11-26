@@ -47,7 +47,7 @@ Custom property | Description | Default
         display: inherit;
         width: calc(100% - var(--grid-outter-padding-border));
       }
-      :host(.display-center) {
+      :host(.controlled-width) {
         display: table;
         margin: 0 auto;
       }
@@ -63,7 +63,6 @@ Custom property | Description | Default
       :host > #container > ::content > * {
         @apply(--layout-flex-none);
         width: var(--grid-column-width);
-        max-width: var(--grid-column-max-width);
         height: var(--grid-row-height);
         margin: var(--grid-gutter);
         box-sizing: border-box;
@@ -92,7 +91,7 @@ Custom property | Description | Default
     'use strict';
     Polymer({
       is: 'g-r-i-d',
-      behaviors: [Polymer.GridBehavior,Polymer.NeonAnimationRunnerBehavior,Polymer.NeonAnimatableBehavior],
+      behaviors: [Polymer.GridBehavior, Polymer.NeonAnimationRunnerBehavior, Polymer.NeonAnimatableBehavior],
       properties: {
         /**
          * Flag controlling the appearance/disappearance of the grid.
