@@ -124,7 +124,8 @@ Custom property | Description | Default
           this.playAnimation('entry');
           this.async(function() {
             this.toggleClass('not-shown', false, this._getGridContainer());
-          }, 50);
+            this._updateLayout();
+          }, 20);
         }
       },
       /**
