@@ -164,7 +164,7 @@
         this.toggleClass('controlled-width', false);
         var __sizingBase = this,
         __style = window.getComputedStyle(__sizingBase),
-        __w = __sizingBase.offsetWidth,
+        __w = __sizingBase.offsetWidth - 0.5, // - 0.5 not to run into decimal point problems 
         __m = parseFloat(__style.marginLeft) + parseFloat(__style.marginRight),
         __p = parseFloat(__style.paddingLeft) + parseFloat(__style.paddingRight),
         __b = parseFloat(__style.borderLeftWidth) + parseFloat(__style.borderRightWidth);
@@ -214,17 +214,17 @@
         __colWidth = Math.min(__colWidth, (__hasMaxColWidth ? this.maxColumnWidth : Number.MAX_VALUE));
         // Real column: supposed width >= min width unless responsiveWhenNarrow and 1 column to display only
         __colWidth = Math.max(__colWidth, (this.responsiveWhenNarrow && this.columns < 2 ? 0 : this.minColumnWidth));
-        var __maxWidth = __hasMaxColWidth ? this._floor(this.columns * Math.max(__colWidth, this.maxColumnWidth) + this._innerGutterCount * this.gutter) + 'px' : 'none';
-        var __rowHeight = this._getRowHeight(__colWidth);
+        var __maxWidth = __hasMaxColWidth ? this.columns * Math.max(__colWidth, this.maxColumnWidth) + this._innerGutterCount * this.gutter : 0,
+        __rowHeight = this._getRowHeight(__colWidth);
         
-        this.toggleClass('controlled-width', __hasMaxColWidth);
+        this.toggleClass('controlled-width', __hasMaxColWidth && (this._width > __maxWidth));
         this.toggleClass('controlled-width', true, this._getGridContainer());
         this.updateStyles({
           '--grid-column-width': this._floor(__colWidth) + 'px',
           '--grid-column-max-width': (__hasMaxColWidth ? this._floor(this.maxColumnWidth) + 'px' : 'none'),
           '--grid-row-height': __rowHeight,
           '--grid-gutter': this._floor(this.gutter) + 'px',
-          '--grid-max-width': __maxWidth,
+          '--grid-max-width': __maxWidth ? __maxWidth + 'px' : 'none',
           '--grid-outter-padding-border': this._floor(this._outerPaddingBorder) + 'px'
         });
       },

@@ -44,7 +44,7 @@ The features that are absent here are :
       :host([columns="1"]) > #container {
         max-width: none;
       }
-      :host([columns="1"][responsive-when-narrow]) > #container > ::content > * {
+      :host([columns="1"][responsive-when-narrow]:not(.controlled-width)) > #container > ::content > * {
         max-width: none;
         width: calc(100% - 2 * var(--grid-gutter))  !important;
       }
