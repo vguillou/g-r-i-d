@@ -137,7 +137,6 @@
         // For some reason, Polymer dupplicates nodes on non-Chromium based browsers when using it's DOM API...
         itemsNodes = this.querySelectorAll((__containerId ? '#' + __containerId + ' > ' : '') + __selector);
         itemsNodes = itemsNodes.length ? itemsNodes : Polymer.dom(this).queryDistributedElements(__selector);
-        console.log('itemsNodes', __containerId, itemsNodes.length);
         return itemsNodes;
       },
 
