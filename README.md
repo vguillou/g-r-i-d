@@ -17,3 +17,7 @@ use this command
 Please refer to the <a href="https://vguillou.github.io/webcomponents/g-r-i-d/">component page</a> for more informations.
 
 Demos available <a href="https://vguillou.github.io/webcomponents/g-r-i-d/demo">here</a>.
+
+## License
+
+[MIT License](https://github.com/vguillou/g-r-i-d/blob/master/LICENSE.md)
