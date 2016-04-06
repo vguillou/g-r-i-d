@@ -22,16 +22,15 @@
     "url": "git://github.com/vguillou/g-r-i-d.git"
   },
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.2.3",
-    "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.5",
-    "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^1.0.2",
-    "neon-animation": "PolymerElements/neon-animation#^1.0.8"
+    "polymer": "Polymer/polymer#^1.0.0",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.0",
+    "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^1.0.0",
+    "neon-animation": "PolymerElements/neon-animation#^1.0.0"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.9",
-    "paper-icon-button": "PolymerElements/paper-icon-button#^1.0.5",
-    "paper-toolbar": "PolymerElements/paper-toolbar#^1.0.4",
-    "paper-scroll-header-panel": "PolymerElements/paper-scroll-header-panel#^1.0.0",
-    "web-component-tester": "*"
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "paper-icon-button": "PolymerElements/paper-icon-button#^1.0.0",
+    "paper-toolbar": "PolymerElements/paper-toolbar#^1.0.0",
+    "paper-scroll-header-panel": "PolymerElements/paper-scroll-header-panel#^1.0.0"
   }
 }
