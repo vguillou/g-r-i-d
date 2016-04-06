@@ -10,7 +10,7 @@
   <meta name="theme-color" content="#f44336">
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
+  <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
   <link rel="import" href="../../iron-icons/iron-icons.html">
   <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
   <link rel="import" href="../../paper-scroll-header-panel/paper-scroll-header-panel.html">
@@ -36,20 +36,32 @@
       right: 0;
       bottom: 0;
       left: 0;
+      @apply(--layout-flex);
     }
 
     g-r-i-d {
       border-style: double;
     }
 
-    div.demoContainer {
+    .demoContainer {
       min-height: 400px;
       width: 100%;
     }
 
-    div.input {
+    .inputContainer {
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+      @apply(--layout-wrap);
+    }
+
+    .input {
       width: 250px;
       margin: 4px;
+      @apply(--layout-vertical);
+    }
+
+    .input.horizontal {
+      @apply(--layout-horizontal);
     }
 
     p {
@@ -111,13 +123,11 @@
 
   <template is="dom-bind" id="demo">
 
-    <paper-scroll-header-panel id="headerPanel" class="flex" condenses keep-condensed-header>
+    <paper-scroll-header-panel id="headerPanel" condenses keep-condensed-header>
 
       <!-- Toolbar -->
       <paper-toolbar id="mainToolbar" class="tall">
         <paper-icon-button icon="arrow-back"></paper-icon-button>
-        <span class="flex"></span>
-        <paper-icon-button icon="search"></paper-icon-button>
         <span class="bottom title">g-r-i-d</span>
       </paper-toolbar>
 
@@ -131,32 +141,32 @@
         <hr>
         <p class="title">Example 1</p>
         <p>Interactive demo :</p> 
-        <div class="layout horizontal center wrap">
-          <div class="layout vertical input">
+        <div class="inputContainer">
+          <div class="input">
             <button on-tap="addItem">+ Add item</button>
             <button on-tap="removeItem">- Remove item</button>
           </div>
-          <div class="layout vertical input">
+          <div class="input">
             <span>minColumnWidth (in px, e.g. 300)</span>
             <input id="ex1MinColWidth" type="number" value="300" onchange="inputChange()">
           </div>
-          <div class="layout vertical input">
+          <div class="input">
             <span>maxColumnWidth (in px, e.g. 400)</span>
             <input id="ex1MaxColWidth" type="number" value="" onchange="inputChange()">
           </div>
-          <div class="layout vertical input">
+          <div class="input">
             <span>maxColumns (e.g. 3)</span>
             <input id="ex1MaxColumns" type="number" value="" onchange="inputChange()">
           </div>
-          <div class="layout vertical input">
+          <div class="input">
             <span>gutter (in px, e.g. 4)</span>
             <input id="ex1Gutter" type="number" value="4" onchange="inputChange()">
           </div>
-          <div class="layout vertical input">
+          <div class="input">
             <span>rowHeight (e.g. 100cw)</span>
             <input id="ex1RowHeight" type="text" value="" onchange="inputChange()">
           </div>
-          <div class="input">
+          <div class="input horizontal">
             <input type="checkbox" checked="{{ex1Shown::change}}"> Grid shown (animation)
           </div>
         </div>
