@@ -33,7 +33,6 @@ Custom property | Description | Default
 ----------------|-------------|----------
 `--grid-layout` | Mixin applied to the grid layout (flexbox).<br/>Particularly interesting to control how the items are justified.<br/>(e.g.: `justify-content: center;`). | `{}`
 
-@group g-r-i-d
 @element g-r-i-d
 @demo demo/index.html
 -->
@@ -54,7 +53,7 @@ Custom property | Description | Default
     'use strict';
     Polymer({
       is: 'g-r-i-d',
-      behaviors: [Polymer.GridBehavior, Polymer.NeonAnimationRunnerBehavior, Polymer.NeonAnimatableBehavior],
+      behaviors: [Polymer.NeonAnimationRunnerBehavior, Polymer.NeonAnimatableBehavior, Polymer.GridBehavior],
       properties: {
         /**
          * Flag controlling the appearance/disappearance of the grid.
@@ -73,7 +72,7 @@ Custom property | Description | Default
          * By default, entry animation is a cascade, exit animation
          * translates all the grid down.
          * For any combined animation (such as cascade) configuration,
-         * the nodes` property will be automatically set with the items
+         * the `nodes` property will be automatically set with the items
          * of the grid. In other cases, the `node` will be set with
          * the grid's container only if it's undefined.
          */
