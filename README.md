@@ -1,5 +1,7 @@
 # &lt;g-r-i-d&gt;
 
+[![GitHub version](https://badge.fury.io/gh/vguillou%2Fg-r-i-d.svg)](https://badge.fury.io/gh/vguillou%2Fg-r-i-d)
+
 _A simple animated, configurable, responsive and adaptive grid layout.
 The adaptive breakpoints are defined by the minimum width of the columns.
 Gutter size, row height, grid items aspect-ratio and maximum width are all easily manageable._
