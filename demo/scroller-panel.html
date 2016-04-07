@@ -11,8 +11,6 @@
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
-  <link rel="import" href="../../iron-icons/iron-icons.html">
-  <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
   <link rel="import" href="../../paper-scroll-header-panel/paper-scroll-header-panel.html">
   <link rel="import" href="../../paper-toolbar/paper-toolbar.html">
   <link rel="import" href="../g-r-i-d.html">
@@ -109,12 +107,12 @@
     }
     #example6[columns='2'] .grid-item:nth-of-type(3n - 2) { /* Every third item, starting from the first */
       max-width: none; /* very important */
-      width: calc(100% - 2 * 2px); /* 100% - 2 * gutter */
+      width: calc(100% - 2px); /* 100% - gutter */
       background-color: #4caf50;
     }
     #example6[columns='3'] .grid-item:nth-of-type(4n - 3) { /* Every fourth item, starting from the first */
       max-width: none; /* very important */
-      width: calc(100% - 2 * 2px); /* 100% - 2 * gutter */
+      width: calc(100% - 2px); /* 100% - gutter */
       background-color: #3f51b5;
     }
   </style>
@@ -127,7 +125,6 @@
 
       <!-- Toolbar -->
       <paper-toolbar id="mainToolbar" class="tall">
-        <paper-icon-button icon="arrow-back"></paper-icon-button>
         <span class="bottom title">g-r-i-d</span>
       </paper-toolbar>
 
@@ -270,7 +267,6 @@
     };
 
     function inputChange() {
-    console.log('inputChange', demo.$.ex1MinColWidth.value);
       var grid = demo.$.example1;
       demo.async(function() {
         grid.minColumnWidth = Number(demo.$.ex1MinColWidth.value);

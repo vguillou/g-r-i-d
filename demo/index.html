@@ -95,12 +95,12 @@
     }
     #example5[columns='2'] .grid-item:nth-of-type(3n - 2) { /* Every third item, starting from the first */
       max-width: none; /* very important */
-      width: calc(100% - 2 * 2px); /* 100% - 2 * gutter */
+      width: calc(100% - 2px); /* 100% - gutter */
       background-color: #4caf50;
     }
     #example5[columns='3'] .grid-item:nth-of-type(4n - 3) { /* Every fourth item, starting from the first */
       max-width: none; /* very important */
-      width: calc(100% - 2 * 2px); /* 100% - 2 * gutter */
+      width: calc(100% - 2px); /* 100% - gutter */
       background-color: #3f51b5;
     }
   </style>
@@ -246,7 +246,6 @@
     };
 
     function inputChange() {
-    console.log('inputChange', demo.$.ex1MinColWidth.value);
       var grid = demo.$.example1;
       demo.async(function() {
         grid.minColumnWidth = Number(demo.$.ex1MinColWidth.value);

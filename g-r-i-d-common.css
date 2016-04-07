@@ -1,22 +1,27 @@
 :host {
   box-sizing: content-box;
+  display: table;
+  margin: 0 auto;
+  width: var(--grid-max-width);
 }
-:host(:not(.controlled-width)) {
+:host(.measure) {
   display: inherit;
   width: calc(100% - var(--grid-outter-padding-border));
 }
-:host(.controlled-width) {
-  display: table;
-  margin: 0 auto;
-}
 :host > #container {
+  padding: 0;
+  max-width: var(--grid-max-width);
+  margin: var(--grid-gutter);
   @apply(--layout-horizontal);
   @apply(--layout-wrap);
   @apply(--grid-layout);
-  padding: 0;
 }
-:host > #container.controlled-width {
-  max-width: var(--grid-max-width);
+:host([columns="1"]) > #container {
+  max-width: none;
+}
+:host([no-outer-gutter]) > #container {
+  max-width: calc(var(--grid-max-width) + 2 * var(--grid-gutter));
+  margin: -var(--grid-gutter);
 }
 :host > #container > ::content > * {
   @apply(--layout-flex-none);
@@ -25,13 +30,7 @@
   margin: var(--grid-gutter);
   box-sizing: border-box;
 }
-:host([columns="1"]) > #container {
+:host([columns="1"][responsive-when-narrow]) > #container > ::content > * {
   max-width: none;
-}
-:host([columns="1"][responsive-when-narrow]:not(.controlled-width)) > #container > ::content > * {
-  max-width: none;
-  width: calc(100% - 2 * var(--grid-gutter))  !important;
-}
-:host([no-outer-gutter]) > #container {
-  margin: calc(var(--grid-gutter) * -1);
+  width: calc(100% - 4 * var(--grid-gutter))  !important;
 }
